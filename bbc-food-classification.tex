@@ -1,4 +1,4 @@
-\documentclass[11pt,twoside,a4paper]{article}
+\documentclass[11pt,a4paper]{article}
 
 \title{Decision Tree Classification of Cuisines for BBC Food Recipes}
 \author{Ross Fenning}
@@ -9,10 +9,84 @@
 
 \section{Introduction}
 
-\section{BBC Food Dataset}
+Most recipes in modern, British cooking have
+originated in several different cultures and cuisines, such as Indian,
+Italian or French. Some, like British and French, have arguably a lot
+of crossover, whilst some are much more further apart.
 
-\section{Classifying by Cuisine}
-\subsection{Analysis}
+Other cuisines might seem superficially different to people, such as Indian and
+South-east Asian cuisines, but perhaps they overlap in a lot of their
+ingredients due to relative geographical proximity?
+
+
+\subsection{The Problem}
+
+This coursework will explore applying supervised machine learning
+techniques on food recipes and within it, we hope to create a model for
+identifying the cultural origin of a recipe from the ingredients used
+therein.
+
+The BBC Food website provides a searchable collection of around 15,000
+recipes created by professional TV chefs -- spanning twenty different
+cuisines -- all of which comprise ingredients, preparation steps and
+further metadata such as suitability for specific diets (e.g.
+vegetarian) and expected time required to prepare the meal.
+
+However, only around a third of the recipes have actually been manually
+categorised as to which cuisine they are. Marking the remaining
+two-thirds with their respective cuisine would be further manual effort
+by editorial staff. A model that is able to assign or at least suggest
+a cuisine based on supervised learning from the known set could be a useful
+tool in improving the metadata on BBC Food recipes.
+
+\subsection{Attributes}
+
+A recipe can be said to have the following attributes:
+
+\begin{itemize}
+  \item Ingredients
+  \item Preparation steps
+  \item Preparation time
+  \item Cooking time
+  \item Number of people it will serve
+  \item Cuisine
+  \item Special diets for which it may or may not be suitable
+    (e.g. vegetarian, dairy-free)
+  \item Whether it's in season
+  \item For which course it is suitable (e.g. starter, dessert).
+  \item Whether it pertains to an occasion (e.g. Burn's Night, Christmas)
+  \item Which BBC programme has featured the recipe
+  \item Which chef created the recipe
+\end{itemize}
+
+For simplicity, we will focus initially on classifying the cuisine class
+attribute based on the ingredients expressed as vector of binary, nominal
+attributes, i.e. the ``carrot'' attribute is \emph{true} if and only if the
+given recipe contains carrots.
+
+Whether a recipe is in season is a transient attribute, but could possibly be
+used in a different problem of learning which recipes are in season in different
+times of the year. The chef and TV programmes that featured the recipe would is
+also out of scope for our problem, but could lead to an interesting machine
+learning problem of trying to identify typical trends in recipes created by
+particular chefs.
+
+Occasion is categorical attribute that marks certain recipes as being typical
+dishes served at particular festivals and celebrations. This could lead to
+another classification problem, but for cuisine classification, it is likely to
+reasonably redundant due to the cultural basis of such festivals. For instance,
+there are unlikely to be many Italian Burn's Night dishes nor Mexican Diwali
+recipes.
+
+The numerical attributes such as number of people the recipe is to serve or the
+number of steps in the cooking method seem fairly arbitrary with respect to the
+ingredients involved or the cuisine. This indicates the problem is very much
+dealing with categorical attributes.
+
+\section{Analysis}
+
+\section{Classification}
+\subsection{Exploring the Dataset}
 \subsection{Training a Cuisine Classifier}
 \subsection{Evaluating the Model}
 \subsection{Improving the Model}
