@@ -1,5 +1,11 @@
 \documentclass[11pt,a4paper]{article}
 
+\usepackage{verbatim}
+\usepackage{graphicx}
+\usepackage{float}
+\floatstyle{boxed}
+\restylefloat{figure}
+
 \title{Decision Tree Classification of Cuisines for BBC Food Recipes}
 \author{Ross Fenning}
 
@@ -44,29 +50,29 @@ tool in improving the metadata on BBC Food recipes.
 A recipe can be said to have the following attributes:
 
 \begin{itemize}
-  \item Ingredients
-  \item Preparation steps
-  \item Preparation time
-  \item Cooking time
-  \item Number of people it will serve
-  \item Cuisine
-  \item Special diets for which it may or may not be suitable
-    (e.g. vegetarian, dairy-free)
-  \item Whether it's in season
-  \item For which course it is suitable (e.g. starter, dessert).
-  \item Whether it pertains to an occasion (e.g. Burn's Night, Christmas)
-  \item Which BBC programme has featured the recipe
-  \item Which chef created the recipe
+\item Ingredients
+\item Preparation steps
+\item Preparation time
+\item Cooking time
+\item Number of people it will serve
+\item Cuisine
+\item Special diets for which it may or may not be suitable
+  (e.g. vegetarian, dairy-free)
+\item Whether it's in season
+\item For which course it is suitable (e.g. starter, dessert).
+\item Whether it pertains to an occasion (e.g. Burn's Night, Christmas)
+\item Which BBC programme has featured the recipe
+\item Which chef created the recipe
 \end{itemize}
 
-For simplicity, we will focus initially on classifying the cuisine class
-attribute based on the ingredients expressed as vector of binary, nominal
-attributes, i.e. the ``carrot'' attribute is \emph{true} if and only if the
-given recipe contains carrots.
+For simplicity, we will focus initially on classifying by the cuisine attribute
+(i.e. using that attribute as the class) based on the ingredients expressed as
+vector of binary, nominal attributes, i.e. the ``carrot'' attribute is
+\emph{true} if and only if the given recipe contains carrots.
 
 Whether a recipe is in season is a transient attribute, but could possibly be
 used in a different problem of learning which recipes are in season in different
-times of the year. The chef and TV programmes that featured the recipe would is
+times of the year. The chef and TV programmes that featured the recipe are
 also out of scope for our problem, but could lead to an interesting machine
 learning problem of trying to identify typical trends in recipes created by
 particular chefs.
@@ -74,9 +80,9 @@ particular chefs.
 Occasion is categorical attribute that marks certain recipes as being typical
 dishes served at particular festivals and celebrations. This could lead to
 another classification problem, but for cuisine classification, it is likely to
-reasonably redundant due to the cultural basis of such festivals. For instance,
-there are unlikely to be many Italian Burn's Night dishes nor Mexican Diwali
-recipes.
+be reasonably redundant due to the cultural basis of such festivals. For
+instance, there are unlikely to be many Italian Burn's Night dishes nor Mexican
+Diwali recipes.
 
 The numerical attributes such as number of people the recipe is to serve or the
 number of steps in the cooking method seem fairly arbitrary with respect to the
@@ -84,6 +90,115 @@ ingredients involved or the cuisine. This indicates the problem is very much
 dealing with categorical attributes.
 
 \section{Analysis}
+
+
+Figure~\ref{model} shows a simplified view of a data model for the BBC Food
+domain. There are many more objects for functional aspects of the pages, but
+the items included in the diagram capture enough to model the recipe content.
+
+
+A recipe is broken up into \emph{stages} representing some discrete part of the
+overall recipe, e.g. the filling and the pastry are two separate stages for
+making a pie. Recipes that do not break up into stages default to having a single
+stage that represents the whole dish.
+
+It is the stages then that map to one or more \emph{ingredients} which represent
+a specific quantity of a food item. For example, \emph{200g Flour} would be an
+\emph{ingredient} with the flour being the \emph{food} and 200g being the
+\emph{quantity}.
+
+\begin{comment}
+  @startuml food_data_model.png
+  
+  skinparam monochrome true
+  skinparam circledCharacterRadius 0
+  skinparam circledCharacterFontSize 0
+  skinparam classFontSize 20
+  
+  class Recipe
+  class Stage
+  class Cuisine
+  class Ingredient {
+    quantity
+  }
+  class Food
+  class Diet
+  class Method
+  class Chef {
+    firstName
+    surname
+  }
+  class Programme
+  class Occasion
+  
+  Recipe "0..*" -u- "1" Cuisine
+  Recipe "1" -d- "1..*" Stage
+  Stage "1" -- "1..*" Ingredient
+  Ingredient "1..*" -r- "1" Food
+  Diet "0..*" -- "0..*" Recipe
+  Recipe "1" -l- "1..*" Method
+  Recipe "1..*" -- "1" Chef
+  Recipe "1..*" -r- "0..*" Programme
+  Recipe "0..*" -d- "0..*" Occasion
+  Food "0..*" -u- "0..*" Occasion
+  
+  @enduml
+\end{comment}
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=\linewidth]{food_data_model.png}
+  \end{center}
+  \caption{Recipe domain model\label{model}}
+\end{figure}
+
+We can see that an \emph{Occasion} can be linked to either a food or a recipe.
+For instance, \emph{Christmas} is linked both to the food \emph{mincemeat} and
+the recipe \emph{Christmas turkey and stuffing}.
+
+A recipe also comprises one or many \emph{methods}, which represent the list
+of instructions to follow in order to prepare the dish. This is textual data
+intended for human reading and is not useful as an attribute for machine
+learning. It could be possible to massage some attributes out of these steps
+using natural language techniques, but that is not explored here.
+
+Finally, we can see that recipes also have the additional attributes of
+diets, chefs and programmes.
+
+Focusing on the cuisine attribute, Figure~\ref{cuisine-set} shows how many
+recipes are assigned to a cuisine on the BBC Food website.
+
+\begin{figure}[h]
+  \includegraphics[width=\linewidth]{cuisines.png}
+  \caption{Number of recipes that have a cuisine on BBC Food\label{cuisine-set}}
+\end{figure}
+
+It seems that approximately 30\% of the recipes on the BBC Food website are
+assigned whilst 70\% haven't been categorised in this way. Given that one
+such uncategorised recipe is
+\emph{American herb pancakes with cottage cheese and pastrami}, which indicates
+its country of origin in the title, it would appear that the cuisine categories
+are missing due to a lack of time or resources to add them by hand. This
+strengthens the utility of a model or system that could pre-populate the cuisine
+category automatically.
+
+The breakdown of the cuisine category is shown in Figure~\ref{cuisines-barchart}
+for only those recipes that have a cuisine set.
+
+\begin{figure}[h]
+  \includegraphics[width=\linewidth]{cuisines.png}
+  \caption{Number of recipes for each cuisine on BBC Food\label{cuisines-barchart}}
+\end{figure}
+
+British recipes are clearly dominant, which is likely not surprisingly for the
+BBC, but it might also be a symptom of British cooking to borrow and derive from
+many other cultures. A classification model might show deeper insight into which
+cultures overlap most with British cuisine.
+
+At the other end of the spectrum, there are some cuisines that have a very small
+number of recipes. Portguese has the lowest at only 14 recipes and African
+cooking has only 18 instances. These categories might be tricky when it comes to
+classification as any model born out of a supervised learning process will not
+been exposed to many examples.
 
 \section{Classification}
 \subsection{Exploring the Dataset}
