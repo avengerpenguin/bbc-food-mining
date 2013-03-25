@@ -1,11 +1,21 @@
 pdf: graphs uml
-	pdflatex bbc-food-classification.tex
+	mkdir -p build
+	cp src/tex/*.tex build/
+	cd build && pdflatex bbc-food-classification.tex
 
 uml:
-	plantuml bbc-food-classification.tex
+	mkdir -p build
+	cp src/tex/*.tex build/
+	cd build && plantuml *
 
 graphs:
-	gnuplot graphs.plot
+	mkdir -p build
+	cp src/csv/*.csv build/
+	head -n 50 src/csv/ingredients_counts.csv >build/top_ingredients_counts.csv
+	head -n 50 src/csv/italian_ingredients_counts.csv >build/top_italian_ingredients_counts.csv
+	head -n 50 src/csv/typical_italian_ingredients.csv >build/top_typical_italian_ingredients.csv
+	cp src/plot/* build/
+	cd build && gnuplot *.plot
 
 clean:
-	rm *.log *.aux *.pdf
+	rm -rf build
