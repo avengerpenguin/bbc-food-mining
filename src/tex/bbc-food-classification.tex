@@ -5,6 +5,7 @@
 \usepackage{float}
 \floatstyle{boxed}
 \restylefloat{figure}
+\usepackage{mathtools}
 
 \title{Decision Tree Classification of Cuisines for BBC Food Recipes}
 \author{Ross Fenning}
@@ -243,7 +244,17 @@ In machine learning, we are concerned with training models on sets of \emph{inst
 of a particular relation. It is therefore necessary to take largely structured
 data such as that shown by Figure~\ref{model} and flatten or denormalise it into
 a single relation. A single relation is then easy to express in CSV or ARFF file
-formats for applications that can read them and provide analysis or mining.
+formats for applications that can read them and provide analysis or mining:
+
+\begin{equation} \label{recipe-tuple}
+(cuisine, ingredient_1, ingredient_2, ... ,ingredient_N)
+\end{equation}
+
+In \eqref{recipe-tuple} all ingredients are converted to nominal, binary attributes
+with values \emph{false} and \emph{true} to reflect whether that recipe contains
+each of the possible ingredients or not. The cuisine attribute is a nominal
+attribute which is serving as our class attribute.
+
 \subsection{Exploring the Dataset}
 
 \subsection{Training a Cuisine Classifier}
