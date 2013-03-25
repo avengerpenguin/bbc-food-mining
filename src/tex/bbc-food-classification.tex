@@ -24,7 +24,6 @@ Other cuisines might seem superficially different to people, such as Indian and
 South-east Asian cuisines, but perhaps they overlap in a lot of their
 ingredients due to relative geographical proximity?
 
-
 \subsection{The Problem}
 
 This coursework will explore applying supervised machine learning
@@ -91,11 +90,9 @@ dealing with categorical attributes.
 
 \section{Analysis}
 
-
 Figure~\ref{model} shows a simplified view of a data model for the BBC Food
 domain. There are many more objects for functional aspects of the pages, but
 the items included in the diagram capture enough to model the recipe content.
-
 
 A recipe is broken up into \emph{stages} representing some discrete part of the
 overall recipe, e.g. the filling and the pastry are two separate stages for
@@ -168,7 +165,7 @@ Focusing on the cuisine attribute, Figure~\ref{cuisine-set} shows how many
 recipes are assigned to a cuisine on the BBC Food website.
 
 \begin{figure}[h]
-  \includegraphics[width=\linewidth]{cuisines.png}
+  \includegraphics[width=\linewidth]{cuisine_set.png}
   \caption{Number of recipes that have a cuisine on BBC Food\label{cuisine-set}}
 \end{figure}
 
@@ -190,7 +187,8 @@ for only those recipes that have a cuisine set.
 \end{figure}
 
 British recipes are clearly dominant, which is likely not surprisingly for the
-BBC, but it might also be a symptom of British cooking to borrow and derive from
+BBC, but it might also be a symptom of British cooking to tend to borrow and
+derive from
 many other cultures. A classification model might show deeper insight into which
 cultures overlap most with British cuisine.
 
@@ -200,8 +198,54 @@ cooking has only 18 instances. These categories might be tricky when it comes to
 classification as any model born out of a supervised learning process will not
 been exposed to many examples.
 
+Looking at the ingredients attributes, we can see in Figure~\ref{top-ingredients}
+that the number of recipes that contain the top 50 ingredients follows a
+Pareto-looking curve when the ingredients themselves are arranged in descending
+order of their appearance.
+
+\begin{figure}[h]
+  \includegraphics[width=\linewidth]{top_ingredients_counts.png}
+  \caption{Number of recipes that use the top 50 ingredients\label{top-ingredients}}
+\end{figure}
+
+Perhaps unsurprisingly for a collection of professional recipes, olive oil is the most
+common ingredient. The popular foods all seem to be very common ingredients to most
+dishes, but this quickly descends to a long tail of foods that only appear in a few
+of the recipes. In fact, 9\% of the foods only appear in a single recipe.
+
+Figure~\ref{ingredients-counts} shows the full curve when we include all of the
+ingredients. This indicates that it may be preferable clean the data of ingredients
+with a rare appearance (and arguably also the ingredients with too common an
+appearance) as Information Theory tells us that very rare or very common attributes
+carry the last information.\cite{fazlollah94}
+
+\begin{figure}[h]
+  \includegraphics[width=\linewidth]{ingredients_counts.png}
+  \caption{Descending frequency distribution of ingredients' appearances in recipes\label{ingredients-counts}}
+\end{figure}
+
 \section{Classification}
+
+As stated in the introduction, we will be exploring supervised learning techniques
+on this recipe dataset and the primary focus will be developing an expert system
+that can classify the cuisine from a recipe's ingredients. In this section,
+we will be attempting to train such a classifier, evaluate it and then
+look to ways to improve the model it produces.
+
+Firstly, we can explore the dataset even further than we did in the previous analysis
+section with respect to the cuisine class. This starts with taking the relational
+structure shown in Figure~\ref{model} and preparing the data to be ready for
+data mining and machine learning techniques.
+
+\subsection{Flattening the recipes}
+
+In machine learning, we are concerned with training models on sets of \emph{instances}
+of a particular relation. It is therefore necessary to take largely structured
+data such as that shown by Figure~\ref{model} and flatten or denormalise it into
+a single relation. A single relation is then easy to express in CSV or ARFF file
+formats for applications that can read them and provide analysis or mining.
 \subsection{Exploring the Dataset}
+
 \subsection{Training a Cuisine Classifier}
 \subsection{Evaluating the Model}
 \subsection{Improving the Model}
@@ -211,4 +255,13 @@ been exposed to many examples.
 \subsection{Observations}
 \subsection{Further Possibilties}
 
+\begin{thebibliography}{9}
+
+\bibitem{fazlollah94}
+  Fazlollah M. Reza,
+  \emph{An Introduction to Information Theory}.
+  Dover Publications, Inc., New York,
+  1961, 1994.
+  ISBN 0-486-68210-2.
+\end{thebibliography}
 \end{document}

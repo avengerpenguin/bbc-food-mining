@@ -16,6 +16,13 @@ set xtics scale 0 rotate offset 0.3, 0 out
 set output 'top_ingredients_counts.png'
 plot "top_ingredients_counts.csv" using 3:xticlabels(2)
 
+set yrange [0:10000]
+set ytics scale 0
+unset xtics
+
+set output 'ingredients_counts.png'
+plot "ingredients_counts.csv" using 3:xticlabels(2)
+
 
 set yrange [0:700]
 set ytics scale 0
@@ -34,11 +41,11 @@ plot "top_typical_italian_ingredients.csv" using 2:xticlabels(1)
 
 set yrange [0:12000]
 set ytics scale 0
+unset xtics
 set xtics scale 0 offset 3.5, 0 out
 
 set output 'cuisine_set.png'
 plot "cuisine_set.csv" using 2:xticlabels(1)
-
 
 
 set yrange [0:2000]
