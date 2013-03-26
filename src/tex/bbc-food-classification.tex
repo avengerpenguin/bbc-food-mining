@@ -259,8 +259,8 @@ of the recipes. In fact, 9\% of the foods only appear in a single recipe.
 Figure~\ref{ingredients-counts} shows the full curve when we include all of the
 ingredients.
 
-It may be preferable clean the data of ingredients
-with with too common an appearance as the amount of
+It may be preferable to clean the data of ingredients
+with too common an appearance as the amount of
 self-information\cite{reza1961introduction} for a very common ingredient is low. For
 instance if asked to guess the classification of an unseen recipe given only
 the information that it contains olive oil, it is clear that little information
@@ -309,9 +309,11 @@ the upper bound on likelihood of the rule being erroneous at 90\% confidence is
 actually 95\% using the Clopper-Pearson method.\cite{clopper1934use}
 
 Hopefully, it should be clear that it is probably suboptimal to build a a model from
-a learned rule with a 0\% error rate on the training dataset, but could
-have an error rate as high as 95\% based on an -- admittedly na\"ive -- application of
-confidence intervals. Such a rule is a good indication of a model that has overfit
+a learned rule that has a 0\% error rate on the training dataset, but
+on the population of recipes as a whole could
+have an error rate up to 95\% based on an -- admittedly na\"ive -- application of
+confidence intervals and a pessimistic interpretation thereof.
+Such a rule is a good indication of a model that has overfit
 its learning dataset and is justification for either post-pruning using Quinlan's
 pessimistic pruning or preventing through a data reduction step that removes rare
 ingredients before any data mining even takes place.
