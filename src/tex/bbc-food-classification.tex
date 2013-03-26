@@ -6,8 +6,6 @@
 \floatstyle{boxed}
 \restylefloat{figure}
 \usepackage{mathtools}
-%\usepackage{harvard}
-%\usepackage{jneurosci}
 
 \title{Decision Tree Classification of Cuisines for BBC Food Recipes}
 \author{Ross Fenning}
@@ -297,7 +295,7 @@ that infers:
 has\_tortellini(X) \to italian(X)
 \end{equation}
 
-would be 100\% correct on that particular
+\noindent would be 100\% correct on that particular
 rule given the training set, but it should be intuitively clear that the confidence
 thereof is very low. This relates to the usage of \emph{pessimistic pruning} employed
 by the C4.5 algorithm\cite{quinlan1993c4} on decision trees constructed by that algorithm.
