@@ -39,7 +39,7 @@ graphs: csv
 	cd build && gnuplot *.plot
 
 trees: dot
-	cd build && dot -Tpng tree.plot >tree.png
+	cd build && dot -Tpng tree.dot >tree.png
 
 clean:
 	rm -rf build
