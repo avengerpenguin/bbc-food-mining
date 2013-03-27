@@ -259,9 +259,16 @@ of the recipes. In fact, 9\% of the foods only appear in a single recipe.
 Figure~\ref{ingredients-counts} shows the full curve when we include all of the
 ingredients.
 
+\begin{figure}[p]
+  \includegraphics[width=\linewidth]{ingredients_counts.png}
+  \caption{Descending frequency distribution of ingredients' appearances in recipes\label{ingredients-counts}}
+\end{figure}
+
+\subsubsection{Data Reduction}
+
 It may be preferable to clean the data of ingredients
 with too common an appearance as the amount of
-self-information\cite{reza1961introduction} for a very common ingredient is low. For
+self-information \cite{reza1961introduction} for a very common ingredient is low. For
 instance if asked to guess the classification of an unseen recipe given only
 the information that it contains olive oil, it is clear that little information
 has been given. We can run any classification on both the full set of ingredients
@@ -275,13 +282,13 @@ easily contribute to a model that overfits the data.
 
 Overfitting occurs when the model becomes over-trained to the specific training set
 used and becomes less useful for applying to new, unclassified instances. It has
-been shown\cite{tetko1995neural} with neural network classifiers, that whilst the
+been shown \cite{tetko1995neural} with neural network classifiers, that whilst the
 classification error against a learning set gradually decreases over time, the
 ability for that trained network to predict categories on instances outside of the
 learning set follows a parabolic curve and starts to increase after passing a
 minimum.
 
-The likely explanation\cite{tetko1995neural} is that classifiers will find underlying
+The likely explanation \cite{tetko1995neural} is that classifiers will find underlying
 relations between attributes in the early iterations, but when the number of iterations
 exceeds the optimum point, it is starting to learn noise and random correlations that
 appear within that noise.
@@ -298,7 +305,7 @@ has\_tortellini(X) \to italian(X)
 \noindent would be 100\% correct on that particular
 rule given the training set, but it should be intuitively clear that the confidence
 thereof is very low. This relates to the usage of \emph{pessimistic pruning} employed
-by the C4.5 algorithm\cite{quinlan1993c4} on decision trees constructed by that algorithm.
+by the C4.5 algorithm \cite{quinlan1993c4} on decision trees constructed by that algorithm.
 Pessimistic pruning uses an upper bound on the probability of error for a given classification
 based on the confidence limits for the binomial distribution.
 
@@ -306,9 +313,9 @@ If we follow the na\"ive approach used in pessimistic pruning and treat the erro
 of \eqref{tortellini-rule} as being $0$ error ``events'' out of $1$ ``trials'' (i.e.
 we classified only one recipe with it and we were 100\% correct and 0\% wrong), then
 the upper bound on likelihood of the rule being erroneous at 90\% confidence is
-actually 95\% using the Clopper-Pearson method.\cite{clopper1934use}
+actually 95\% using the Clopper-Pearson method. \cite{clopper1934use}
 
-Hopefully, it should be clear that it is probably suboptimal to build a a model from
+Hopefully, it should be clear that it is probably suboptimal to build a model from
 a learned rule that has a 0\% error rate on the training dataset, but
 on the population of recipes as a whole could
 have an error rate up to 95\% based on an -- admittedly na\"ive -- application of
@@ -318,10 +325,133 @@ its learning dataset and is justification for either post-pruning using Quinlan'
 pessimistic pruning or preventing through a data reduction step that removes rare
 ingredients before any data mining even takes place.
 
-\begin{figure}[p]
-  \includegraphics[width=\linewidth]{ingredients_counts.png}
-  \caption{Descending frequency distribution of ingredients' appearances in recipes\label{ingredients-counts}}
-\end{figure}
+In tandem with the desire to prevent overfitting of the data, is a desire to build
+the smallest model or tree possible that best classifies the recipes. This
+aim is expressed both by Quinlan when introducing C4.5 \cite{quinlan1993c4}
+and by Witten and Frank \cite{witten2005data}, who introduce the
+\emph{Minimum Description Length}, or MDL, principle. This principle is
+described as being a manifestation of \emph{Occam's Razor} within machine learning
+in that we prefer the simplest theory (i.e. classification model) that describes
+the evidence (i.e. the dataset). They describe the goal of trying to choose
+theory $T$ given the evidence $E$ that maximises the posteriori probability:
+
+\begin{equation}
+Pr(T | E)
+\end{equation}
+
+\noindent as being equivalent to trying to minimise the number of bits necessary
+to describe the theory and its informational loss:
+
+\begin{equation}
+L(T) + L(E | T)
+\end{equation}
+
+It could be that one way to ensure we achieve the smallest model possible is eagerly to remove
+attributes and dimensions that we can predict with some confidence are unlikely
+to contribute to the final expert system produced.
+
+It may be the case however that little is gained by pre-emptively removing
+ingredients that are unlikely to be helpful for classification. If we are to use an Inductive
+Decision Tree classification approach such as ID3 \cite{quinlan1986induction}
+or C4.5 \cite{quinlan1993c4}, then the algorithm should endeavour to build
+rules based on ingredients that best classify the cuisines. It should be expected
+in an optimal solution therefore that pre-emptive reduction of the ingredients
+attributes is unnecessary as the less indicative ingredients will not be used
+near the top of the tree. We would then achieve a minimal model but halting
+the tree construction at the error minimum point before overfitting starts
+to occur as described by Tetko, Livingstone and Luik, \cite{tetko1995neural}
+which should be the point at which the attributes that have genuine relationships
+have been modelled, but before the point at which outlier attributes such as
+\emph{tortellini} above (which could be considered noise) start to affect the
+classification.
+
+Unfortunately, the assumption that the algorithm alone will behave optimally in this
+way cannot be relied upon. Constructing an optimal decision tree is shown to be
+an NP-complete problem \cite{hyafil1976constructing}, which is why algorithms
+like C4.5 are greedy and nonbacktracking \cite{quinlan1993c4}, favouring
+maximising local optima only at each iteration. An ancestor to C4.5, CLS,
+uses a lookahead to a fixed depth similar to Minimax \cite{quinlan1986induction},
+which can be computational expensive. Given we usually want supervised
+learning to scale to large numbers of learning examples, it is arguably preferable
+to take the more common approach of aiding the learning process with
+data reduction -- e.g. removing ingredients that don't match some acceptance threshold
+as suggested above -- or divide-and-conquer approaches where perhaps clustering is
+used to group recipes that are similar so that different classifiers can be
+trained on those specific clusters only. It is also common in machine learning
+to use expert domain knowledge where possible to guide improvements to the
+models.
+
+For the cuisine classification problem, we will define \emph{minimum occurrence}
+and \emph{maximum occurrence} thresholds below and above which we will remove
+ingredients attributes. They will be set initially to $O$ and $\infty$
+respectively so the first models will be constructed from every ingredient
+attribute, but they will then provide a baseline against which we can compare
+models learnt from different occurrence thresholds so as to evaluate whether
+improvements are made through data reduction in this way.
+
+Another consideration for data reduction can be to reduce dimensionality by creating
+compound attributes from ingredients that strongly correlate. For instance, if
+we were to decide either through similarity calculations or domain knowledge
+that salt and pepper always appear in recipes together and negligibly does
+one appear without the other, we can replace these distrinct attributes with a compound
+attribute \emph{salt-pepper} that is \emph{true} for all recipes that has either.
+Again, this reduces complexity and can even smooth out noise \cite{han2006data} and
+thus do more to increase accuracy than to reduce it.
+
+\subsubsection{Similarity and Dissimilarity}
+
+Given all the ingredients attributes are asymmetric, binary attributes, we can ignore
+the cuisine class attribute for now and calculate the similarity or distances
+between recipes using the \emph{Jaccard distance}: \cite{han2006data}
+
+\begin{equation}
+J_{\delta}(A,B) = 1 - J(A,B) = { { |A \cup B| - |A \cap B| } \over |A \cup B| }
+\end{equation}
+
+\noindent where $A$ and $B$ are the sets of ingredients that appear in two given
+recipes. We can see such a matrix on a sample of five reasonably similar recipes
+in Table~\ref{tab:distance-matrix}.
+
+\begin{table}
+  \centering
+  \begin{tabular}{| p{2cm} | p{2cm} | p{2cm} | p{2cm} | p{2cm} | p{2cm} |}
+    \hline
+     & Amaretto vanilla custard & Cr\`eme br\^ul\'ee & Raspberry ripple ice cream & Apricot upside-down tart & American pancakes \\
+    \hline
+    Amaretto vanilla custard   & 0    & 0 & 0.17 & 0.9 & 0.92 \\
+    \hline
+    Cr\`eme br\^ul\'ee         & 0    & 0 &      &     &      \\
+    \hline
+    Raspberry ripple ice cream & 0.17 &   & 0    &     &      \\
+    \hline
+    Apricot upside-down tart   & 0.9  &   &      & 0   &      \\
+    \hline
+    American pancakes          & 0.92 &   &      &     & 0    \\
+    \hline
+  \end{tabular}
+  \caption{Distance matrix between five dessert recipes}
+  \label{tab:distance-matrix}
+\end{table}
+
+One immediate observation from Table~\ref{tab:distance-matrix} is that there
+are two recipes that come out with a distance of $0$, implying they have
+identical ingredients. This appears to be indeed the case. Even more interestingly,
+the cr\`eme br\^ul\'ee is classified as \emph{French} whereas the
+amaretto vanilla custard is classified as \emph{British}. It is clear that any classification
+of the cuisine based solely on the ingredients is going to put these two recipes in
+the same class (although which it will choose is less clear) and thus we can see
+\emph{before even running any supervised learning} that there will be errors when using
+just ingredients as the training attributes. It is also particularly of note when
+we refer to domain knowledge on
+cooking and cuisine that our first such case is a confusion between a French and a British
+dish given these are two cuisines with significant overlap from centuries of cultural mixing
+and proximity.
+
+A further observation is that the sparse nature of the number of ingredients used
+on average per recipe out of all possible ingredients means that it is very easy for two
+recipes that have a few ingredients in common to come out with a large distance apart such
+as 0.9. The mean distance between any two classified recipes in this dataset is 0.94, which
+indicates a very sparse dataset in general.
 
 \subsection{Training a Cuisine Classifier}
 \subsection{Evaluating the Model}
