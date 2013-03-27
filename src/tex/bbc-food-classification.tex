@@ -6,6 +6,8 @@
 \floatstyle{boxed}
 \restylefloat{figure}
 \usepackage{mathtools}
+%\usepackage{harvard}
+%\usepackage{jneurosci}
 
 \title{Decision Tree Classification of Cuisines for BBC Food Recipes}
 \author{Ross Fenning}
@@ -218,7 +220,7 @@ Figure~\ref{ingredients-counts} shows the full curve when we include all of the
 ingredients. This indicates that it may be preferable clean the data of ingredients
 with a rare appearance (and arguably also the ingredients with too common an
 appearance) as Information Theory tells us that very rare or very common attributes
-carry the last information.\cite{fazlollah94}
+carry the least information.\cite{reza1961introduction}
 
 \begin{figure}[h]
   \includegraphics[width=\linewidth]{ingredients_counts.png}
@@ -255,6 +257,7 @@ with values \emph{false} and \emph{true} to reflect whether that recipe contains
 each of the possible ingredients or not. The cuisine attribute is a nominal
 attribute which is serving as our class attribute.
 
+
 \subsection{Exploring the Dataset}
 
 \subsection{Training a Cuisine Classifier}
@@ -266,13 +269,6 @@ attribute which is serving as our class attribute.
 \subsection{Observations}
 \subsection{Further Possibilties}
 
-\begin{thebibliography}{9}
-
-\bibitem{fazlollah94}
-  Fazlollah M. Reza,
-  \emph{An Introduction to Information Theory}.
-  Dover Publications, Inc., New York,
-  1961, 1994.
-  ISBN 0-486-68210-2.
-\end{thebibliography}
+\bibliographystyle{cell}
+\bibliography{bibtex}
 \end{document}

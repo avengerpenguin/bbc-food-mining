@@ -1,6 +1,9 @@
 pdf: graphs uml
 	mkdir -p build
-	cp src/tex/*.tex build/
+	cp src/tex/*.tex src/tex/*.bib build/
+	cd build && pdflatex bbc-food-classification.tex
+	cd build && bibtex bbc-food-classification.aux
+	cd build && pdflatex bbc-food-classification.tex
 	cd build && pdflatex bbc-food-classification.tex
 
 uml:
