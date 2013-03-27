@@ -314,7 +314,9 @@ Hopefully, it should be clear that it is probably suboptimal to build a a model 
 a learned rule with a 0\% error rate on the training dataset, but could
 have an error rate as high as 95\% based on an -- admittedly na\"ive -- application of
 confidence intervals. Such a rule is a good indication of a model that has overfit
-its learning dataset.
+its learning dataset and is justification for either post-pruning using Quinlan's
+pessimistic pruning or preventing through a data reduction step that removes rare
+ingredients before any data mining even takes place.
 
 \begin{figure}[p]
   \includegraphics[width=\linewidth]{ingredients_counts.png}
