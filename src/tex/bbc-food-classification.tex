@@ -91,7 +91,9 @@ number of steps in the cooking method seem fairly arbitrary with respect to the
 ingredients involved or the cuisine. This indicates the problem is very much
 dealing with categorical attributes.
 
-\section{Analysis}
+\section{BBC Food Dataset}
+
+\subsection{Structure}
 
 Figure~\ref{model} shows a simplified view of a data model for the BBC Food
 domain. There are many more objects for functional aspects of the pages, but
@@ -144,7 +146,7 @@ a specific quantity of a food item. For example, \emph{200g Flour} would be an
   
   @enduml
 \end{comment}
-\begin{figure}[h]
+\begin{figure}[p]
   \begin{center}
     \includegraphics[width=\linewidth]{food_data_model.png}
   \end{center}
@@ -167,7 +169,7 @@ diets, chefs and programmes.
 Focusing on the cuisine attribute, Figure~\ref{cuisine-set} shows how many
 recipes are assigned to a cuisine on the BBC Food website.
 
-\begin{figure}[h]
+\begin{figure}[p]
   \includegraphics[width=\linewidth]{cuisine_set.png}
   \caption{Number of recipes that have a cuisine on BBC Food\label{cuisine-set}}
 \end{figure}
@@ -181,51 +183,8 @@ are missing due to a lack of time or resources to add them by hand. This
 strengthens the utility of a model or system that could pre-populate the cuisine
 category automatically.
 
-The breakdown of the cuisine category is shown in Figure~\ref{cuisines-barchart}
-for only those recipes that have a cuisine set.
+\subsection{Visualisation of different classes}
 
-\begin{figure}[h]
-  \includegraphics[width=\linewidth]{cuisines.png}
-  \caption{Number of recipes for each cuisine on BBC Food\label{cuisines-barchart}}
-\end{figure}
-
-British recipes are clearly dominant, which is likely not surprisingly for the
-BBC, but it might also be a symptom of British cooking to tend to borrow and
-derive from
-many other cultures. A classification model might show deeper insight into which
-cultures overlap most with British cuisine.
-
-At the other end of the spectrum, there are some cuisines that have a very small
-number of recipes. Portguese has the lowest at only 14 recipes and African
-cooking has only 18 instances. These categories might be tricky when it comes to
-classification as any model born out of a supervised learning process will not
-been exposed to many examples.
-
-Looking at the ingredients attributes, we can see in Figure~\ref{top-ingredients}
-that the number of recipes that contain the top 50 ingredients follows a
-Pareto-looking curve when the ingredients themselves are arranged in descending
-order of their appearance.
-
-\begin{figure}[h]
-  \includegraphics[width=\linewidth]{top_ingredients_counts.png}
-  \caption{Number of recipes that use the top 50 ingredients\label{top-ingredients}}
-\end{figure}
-
-Perhaps unsurprisingly for a collection of professional recipes, olive oil is the most
-common ingredient. The popular foods all seem to be very common ingredients to most
-dishes, but this quickly descends to a long tail of foods that only appear in a few
-of the recipes. In fact, 9\% of the foods only appear in a single recipe.
-
-Figure~\ref{ingredients-counts} shows the full curve when we include all of the
-ingredients. This indicates that it may be preferable clean the data of ingredients
-with a rare appearance (and arguably also the ingredients with too common an
-appearance) as Information Theory tells us that very rare or very common attributes
-carry the least information.\cite{reza1961introduction}
-
-\begin{figure}[h]
-  \includegraphics[width=\linewidth]{ingredients_counts.png}
-  \caption{Descending frequency distribution of ingredients' appearances in recipes\label{ingredients-counts}}
-\end{figure}
 
 \section{Classification}
 
@@ -235,10 +194,9 @@ that can classify the cuisine from a recipe's ingredients. In this section,
 we will be attempting to train such a classifier, evaluate it and then
 look to ways to improve the model it produces.
 
-Firstly, we can explore the dataset even further than we did in the previous analysis
-section with respect to the cuisine class. This starts with taking the relational
-structure shown in Figure~\ref{model} and preparing the data to be ready for
-data mining and machine learning techniques.
+Firstly, we can explore the dataset even further with respect to the cuisine class.
+This starts with taking the relational structure shown in Figure~\ref{model} and
+preparing the data to be ready for data mining and machine learning techniques.
 
 \subsection{Flattening the recipes}
 
@@ -257,8 +215,111 @@ with values \emph{false} and \emph{true} to reflect whether that recipe contains
 each of the possible ingredients or not. The cuisine attribute is a nominal
 attribute which is serving as our class attribute.
 
+Thus a single instance would be, for example:
+
+\begin{equation} \label{recipe-example}
+(Italian, True, False, ... ,True)
+\end{equation}
+
 
 \subsection{Exploring the Dataset}
+
+The breakdown of the cuisine category is shown in Figure~\ref{cuisines-barchart}
+for only those recipes that have a cuisine set.
+
+\begin{figure}[p]
+  \includegraphics[width=\linewidth]{cuisines.png}
+  \caption{Number of recipes for each cuisine on BBC Food\label{cuisines-barchart}}
+\end{figure}
+
+British recipes are clearly dominant, which is likely not surprisingly for the
+BBC, but it might also be a symptom of British cooking's tendancy to borrow and
+derive from
+many other cultures. A classification model might show deeper insight into which
+cultures overlap most with British cuisine.
+
+At the other end of the spectrum, there are some cuisines that have a very small
+number of recipes. Portguese has the lowest at only 14 recipes and African
+cooking has only 18 instances. These categories might be tricky when it comes to
+classification as any model born out of a supervised learning process will not
+have been exposed to many examples therein.
+
+Looking at the ingredients attributes, we can see in Figure~\ref{top-ingredients}
+that the number of recipes that contain the top 50 ingredients follows a
+Pareto-looking curve when the ingredients themselves are arranged in descending
+order of their appearance.
+
+\begin{figure}[p]
+  \includegraphics[width=\linewidth]{top_ingredients_counts.png}
+  \caption{Number of recipes that use the top 50 ingredients\label{top-ingredients}}
+\end{figure}
+
+Perhaps unsurprisingly for a collection of professional recipes, olive oil is the most
+common ingredient. The popular foods all seem to be very common ingredients to most
+dishes, but this quickly descends to a long tail of foods that only appear in a few
+of the recipes. In fact, 9\% of the foods only appear in a single recipe.
+Figure~\ref{ingredients-counts} shows the full curve when we include all of the
+ingredients.
+
+It may be preferable clean the data of ingredients
+with with too common an appearance as the amount of
+self-information\cite{reza1961introduction} for a very common ingredient is low. For
+instance if asked to guess the classification of an unseen recipe given only
+the information that it contains olive oil, it is clear that little information
+has been given. We can run any classification on both the full set of ingredients
+and reduced versions thereof (i.e. projections into fewer dimensions) and compare
+the models to evaluate the benefits of preprocessing the data in this way.
+
+There may also be some benefit to reducing the dataset by removing the most rare
+ingredients. Whilst their self-information is high (nearly 14 bits for ingredients
+that only appear in one recipe compared to 0.8 bits for olive oil), they could
+easily contribute to a model that overfits the data.
+
+Overfitting occurs when the model becomes over-trained to the specific training set
+used and becomes less useful for applying to new, unclassified instances. It has
+been shown\cite{tetko1995neural} with neural network classifiers, that whilst the
+classification error against a learning set gradually decreases over time, the
+ability for that trained network to predict categories on instances outside of the
+learning set follows a parabolic curve and starts to increase after passing a
+minimum.
+
+The likely explanation\cite{tetko1995neural} is that classifiers will find underlying
+relations between attributes in the early iterations, but when the number of iterations
+exceeds the optimum point, it is starting to learn noise and random correlations that
+appear within that noise.
+
+To use a real example from the recipe dataset, only one recipe in the set of
+classified recipes uses tortellini as an ingredient: \emph{Tortellini in sarcofago}.
+This recipe also happens to be classified as Italian cuisine, which means a classifier
+that infers:
+
+\begin{equation} \label{tortellini-rule}
+has\_tortellini(X) \to italian(X)
+\end{equation}
+
+would be 100\% correct on that particular
+rule given the training set, but it should be intuitively clear that the confidence
+thereof is very low. This relates to the usage of \emph{pessimistic pruning} employed
+by the C4.5 algorithm\cite{quinlan1993c4} on decision trees constructed by that algorithm.
+Pessimistic pruning uses an upper bound on the probability of error for a given classification
+based on the confidence limits for the binomial distribution.
+
+If we follow the na\"ive approach used in pessimistic pruning and treat the error rate
+of \eqref{tortellini-rule} as being $0$ error ``events'' out of $1$ ``trials'' (i.e.
+we classified only one recipe with it and we were 100\% correct and 0\% wrong), then
+the upper bound on likelihood of the rule being erroneous at 90\% confidence is
+actually 95\% using the Clopper-Pearson method.\cite{clopper1934use}
+
+Hopefully, it should be clear that it is probably suboptimal to build a a model from
+a learned rule with a 0\% error rate on the training dataset, but could
+have an error rate as high as 95\% based on an -- admittedly na\"ive -- application of
+confidence intervals. Such a rule is a good indication of a model that has overfit
+its learning dataset.
+
+\begin{figure}[p]
+  \includegraphics[width=\linewidth]{ingredients_counts.png}
+  \caption{Descending frequency distribution of ingredients' appearances in recipes\label{ingredients-counts}}
+\end{figure}
 
 \subsection{Training a Cuisine Classifier}
 \subsection{Evaluating the Model}
