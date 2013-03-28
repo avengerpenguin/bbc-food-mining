@@ -24,12 +24,12 @@ dot:
 	cp src/dot/*.dot build/
 
 tagclouds: csv python
-	cd build && python tagcloud.py ingredients_counts.csv 1 2 ingredients_counts.png
-	cd build && python tagcloud.py asian_ingredients_counts.csv 1 2 asian_ingredients_counts.png
-	cd build && python tagcloud.py italian_ingredients_counts.csv 1 2 italian_ingredients_counts.png
-	cd build && python tagcloud.py indian_ingredients_counts.csv 1 2 indian_ingredients_counts.png
-	cd build && python tagcloud.py christmas_ingredients_counts.csv 1 2 christmas_ingredients_counts.png
-	cd build && python tagcloud.py burns_night_ingredients_counts.csv 1 2 burns_night_ingredients_counts.png
+	cd build && python tagcloud.py ingredients_counts.csv 1 2 ingredients_tags.png
+	cd build && python tagcloud.py asian_ingredients_counts.csv 1 2 asian_ingredients_tags.png
+	cd build && python tagcloud.py italian_ingredients_counts.csv 1 2 italian_ingredients_tags.png
+	cd build && python tagcloud.py indian_ingredients_counts.csv 1 2 indian_ingredients_tags.png
+	cd build && python tagcloud.py christmas_ingredients_counts.csv 1 2 christmas_ingredients_tags.png
+	cd build && python tagcloud.py burns_night_ingredients_counts.csv 1 2 burns_night_ingredients_tags.png
 
 graphs: csv
 	head -n 50 src/csv/ingredients_counts.csv >build/top_ingredients_counts.csv

@@ -91,24 +91,6 @@ number of steps in the cooking method seem fairly arbitrary with respect to the
 ingredients involved or the cuisine. This indicates the problem is very much
 dealing with categorical attributes.
 
-\section{BBC Food Dataset}
-
-\subsection{Structure}
-
-Figure~\ref{model} shows a simplified view of a data model for the BBC Food
-domain. There are many more objects for functional aspects of the pages, but
-the items included in the diagram capture enough to model the recipe content.
-
-A recipe is broken up into \emph{stages} representing some discrete part of the
-overall recipe, e.g. the filling and the pastry are two separate stages for
-making a pie. Recipes that do not break up into stages default to having a single
-stage that represents the whole dish.
-
-It is the stages then that map to one or more \emph{ingredients} which represent
-a specific quantity of a food item. For example, \emph{200g Flour} would be an
-\emph{ingredient} with the flour being the \emph{food} and 200g being the
-\emph{quantity}.
-
 \begin{comment}
   @startuml food_data_model.png
   
@@ -153,6 +135,24 @@ a specific quantity of a food item. For example, \emph{200g Flour} would be an
   \caption{Recipe domain model\label{model}}
 \end{figure}
 
+\section{BBC Food Dataset}
+
+\subsection{Structure}
+
+Figure~\ref{model} shows a simplified view of a data model for the BBC Food
+domain. There are many more objects for functional aspects of the pages, but
+the items included in the diagram capture enough to model the recipe content.
+
+A recipe is broken up into \emph{stages} representing some discrete part of the
+overall recipe, e.g. the filling and the pastry are two separate stages for
+making a pie. Recipes that do not break up into stages default to having a single
+stage that represents the whole dish.
+
+It is the stages then that map to one or more \emph{ingredients} which represent
+a specific quantity of a food item. For example, \emph{200g Flour} would be an
+\emph{ingredient} with the flour being the \emph{food} and 200g being the
+\emph{quantity}.
+
 We can see that an \emph{Occasion} can be linked to either a food or a recipe.
 For instance, \emph{Christmas} is linked both to the food \emph{mincemeat} and
 the recipe \emph{Christmas turkey and stuffing}.
@@ -166,13 +166,13 @@ using natural language techniques, but that is not explored here.
 Finally, we can see that recipes also have the additional attributes of
 diets, chefs and programmes.
 
-Focusing on the cuisine attribute, Figure~\ref{cuisine-set} shows how many
-recipes are assigned to a cuisine on the BBC Food website.
-
-\begin{figure}[p]
+\begin{figure}[h]
   \includegraphics[width=\linewidth]{cuisine_set.png}
   \caption{Number of recipes that have a cuisine on BBC Food\label{cuisine-set}}
 \end{figure}
+
+Focusing on the cuisine attribute, Figure~\ref{cuisine-set} shows how many
+recipes are assigned to a cuisine on the BBC Food website.
 
 It seems that approximately 30\% of the recipes on the BBC Food website are
 assigned whilst 70\% haven't been categorised in this way. Given that one
@@ -185,6 +185,57 @@ category automatically.
 
 \subsection{Visualisation of different classes}
 
+Visualisation of relations with of the order of 1,000 attributes is not as
+trivial a plotting 2-dimensional vectors in a plane and a lot of visualisation
+techniques have historically been for numeric data. A popular technique that
+has risen with the increase of textual and higher-dimensional data from places
+such as social networks is the \emph{tag cloud}. \cite{han2006data}
+
+\begin{figure}[b!]
+  \includegraphics[width=\linewidth]{ingredients_tags.png}
+  \caption{Tag cloud showing popularity of ingredients across all recipes}
+  \label{fig:tagcloud}
+\end{figure}
+
+\begin{figure}[p]
+  \includegraphics[width=\linewidth]{indian_ingredients_tags.png}
+  \caption{Tag cloud showing popularity of ingredients for Indian recipes}
+  \label{fig:tagcloud-indian}
+\end{figure}
+
+\begin{figure}[p]
+  \includegraphics[width=\linewidth]{italian_ingredients_tags.png}
+  \caption{Tag cloud showing popularity of ingredients for Italian recipes}
+  \label{fig:tagcloud-italian}
+\end{figure}
+
+Such a tag cloud can be seen in figure~\ref{fig:tagcloud}. There is a clear
+abundance of black pepper and olive oil and we can see, at a glance, an
+impression of all the ingredients that appear in the most recipes. Where
+this visualisation becomes even more useful is when compared side-by-side
+with the same tag cloud narrowed down to only, say, Indian cusines, as
+shown in figure~\ref{fig:tagcloud-indian}.
+
+The Italian-only tag cloud in figure~\ref{fig:tagcloud-italian} has
+a very different aesthetic in that it generally looks a lot more sparse. This
+seems to be due to having a few, very prominent ingredients common
+to nearly all recipes, but perhaps a longer tail of the less common
+ingredients. This may indicate Italian as being a more diverse cuisine or
+that Indian has a larger number of ingredients that are prevalent in all
+of its typical dishes. The tag cloud approach to visualisation gives us
+a very quick way to see the ingredient distributions across different
+subsets of the recipe dataset and is a good way to surface such possible
+explanations for the differences we can see.
+
+The tag cloud also gives a quick way to view subsets of recipes by other
+criteria, e.g. recipes marked as pertaining
+to Christmas as in figure~\ref{fig:tagcloud-christmas}.
+
+\begin{figure}[h]
+  \includegraphics[width=\linewidth]{christmas_ingredients_tags.png}
+  \caption{Tag cloud showing popularity of ingredients for Christmas}
+  \label{fig:tagcloud-christmas}
+\end{figure}
 
 \section{Classification}
 

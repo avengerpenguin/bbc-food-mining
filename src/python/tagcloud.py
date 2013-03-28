@@ -29,6 +29,6 @@ if __name__ == '__main__':
                 break
 
     tags = make_tags(food_counts, minsize=10, maxsize=100)
-    create_tag_image(tags, arguments['<output_file>'], size=(1024, 768), layout=4, fontname='Lobster')
+    create_tag_image(tags, arguments['<output_file>'], size=(1000, 600), layout=4, fontname='Lobster')
 
 
