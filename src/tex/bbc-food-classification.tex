@@ -7,6 +7,7 @@
 \restylefloat{figure}
 \usepackage{mathtools}
 \usepackage{rotating}
+\usepackage{hyperref}
 
 \title{Decision Tree Classification of Cuisines for BBC Food Recipes}
 \author{Ross Fenning}
@@ -732,9 +733,16 @@ tweak the results further. We can try another run with the confidence factor dro
 to 0.1. In this case, the accuracy increases to 61.2232.
 
 The CART algorithm another classifier that operates pruning, but not using
-the loose statistical basis for C4.5's pruning. Weka provides a SimpleCart
+the loose statistical basis for C4.5's pruning. It uses a \emph{cost-complexity}
+postpruning approach that works up from the leaves to the root, deciding if
+the increased accuracy for each branch justifies the extra complexity from it
+existing at all. This clearly favours a simpler tree, trading off local accuracy
+perhaps for a simpler, more accurate model overall.
+
+Weka provides a SimpleCart
 implementation of this, which gives an accuracy of 64.691\%, which is the best
-model achieved so far.
+model achieved so far. It also produces far shallower trees than both ID3
+and C4.5 (J48) for this particular problem.
 
 \subsection{Confusion}
 
@@ -745,7 +753,8 @@ to see where the errors still lie and how they fit in with our understanding of 
 \begin{sidewaystable}
   \centering
   \begin{tabular}{r r r r r r r r r r r r r r r r r r r | l}
-    a&   b&   c&   d&   e&   f&   g&   h&   i&   j&   k&   l&   m&   n&   o&   p&   q&   r&   s& \from classified as \\
+    a&   b&   c&   d&   e&   f&   g&   h&   i&   j&   k&   l&   m&   n&   o&   p&   q&   r&   s& $\leftarrow$ classified as \\
+    \hline
     0&   0&   7&   0&   0&   0&   0&   0&   5&   0&   4&   1&   1&   0&   0&   0&   0&   0&   0& a = african \\
     0&  30& 108&   4&   5&   0&   2&   0&   5&   0&  17&   0&   2&   1&   0&   0&   2&   2&   0& b = american \\
     0&   2&1749&   4&   7&   0&  15&   0&  18&   0& 121&   1&   1&   0&   0&   0&   5&   5&   0& c = british \\
@@ -766,13 +775,89 @@ to see where the errors still lie and how they fit in with our understanding of 
     0&   0&  15&   0&  17&   0&   1&   0&  24&   0&   6&   6&   2&   0&   0&   0&   0& 177&   0& r = thai\_and\_south-east\_asian \\
     0&   0&  15&   0&   0&   0&   0&   2&   5&   0&  11&   0&   2&   1&   0&   0&   2&   0&   3& s = turkish\_and\_middle\_eastern \\
   \end{tabular}
+  \caption{Confusion matrix for cuisine classification with CART.}
+  \label{tab:confusion}
 \end{sidewaystable}
+
+The confusion matrix shows many recipes are classified as British, when they are in
+fact -- in descending order of confusion -- French, Italian, American or Indian. This
+supports the knowledge that British cooking is the most likely to borrow
+from other cultures. Chinese food has the biggest confusion with British (again,
+another culture from which we borrow a lot of cuisine) and Thai/South-East Asian (a
+reasonably close neighbour geographically). Spanish is confused mostly with British
+and Italian. In short, the most difficult classifications are ones we would predict
+with domain knowledge.
 
 \subsection{Evaluating on new recipes}
 
+\begin{sidewaystable}
+  \centering
+  \begin{tabular}{| p{9cm} | p{3cm} | p{9cm} |}
+    \hline
+    \textbf{Recipe} & \textbf{Classification from model} & \textbf{Human classification} \\
+    \hline
+    Stuffed tomato with tuna, mozzarella and gremolata & Italian & Italian \\
+    \hline
+    N’duja-crusted cod with broccoli & Italian & Somewhat Italian. The chef and the 'Nduja sausage are Italian. \\
+    \hline
+    Rump steak, chips and béarnaise sauce & British & Mainly British, but the sauce is technically French in origin. \\
+    \hline
+    Long Island iced tea (simple version) & Chinese & American \\
+    \hline
+    Baked bass with creamed leeks & British & British, but could pass as French \\
+    \hline
+    Duck \'a l'orange with grilled broccoli & British & Canard \'a l'Orange is a classic French dish, but arguably Duck \'a l'orange is a British interpretation of it made popular in the 1960s. \cite{hestonsfeasts} \\
+    \hline
+    Thai green chicken curry with crisp carrot strips & Chinese & Thai/South-East Asian as it's a Thai curry by name, although it's thrown the model off by lacking cumin and fish sauce \\
+    \hline
+    Broccoli with chilli and garlic oil & Italian & Possibly Chinese due to wok style \\
+    \hline
+    Vanilla couscous scones served with rum and strawberry jam & British & British \\
+    \hline
+    Slow-cooked beef fillet with horseradish mash, wild mushroom tortellini and red wine sauce & British & British, despite things borrowed from other cultures originally \\
+    \hline
+  \end{tabular}
+  \caption{Classifying random, uncategorised BBC recipes using CART-generated model}
+\end{sidewaystable}
+
 \section{Discussion}
-\subsection{Difficulties}
-\subsection{Observations}
+\subsection{Using ingredients only as attributes}
+
+One of the first difficulties that surfaced was that some recipes simply could not
+be told apart by ingredients alone. The example that came up was the fact that
+cr\`eme br\^ul\'ee and amaretto vanilla custard had identical ingredients, despite
+supposedly being French and British respectively. Do they differ due to method? Is
+it solely in the names?
+
+The models may have been more predictive if further attributes were retrieved.
+Other attributes were identified, but omitted for simplicity, such as whether
+the dish is a starter or dessert. If the model were to be specific to BBC recipe
+classification, we could include the name of the chef and the programme
+that showcased the recipe -- it might be that chefs or programmes tend toward
+certain cuisines. A very sophisticated approach using natural language techniques
+on the titles and the cooking method instructions could provide even more
+insight.
+
+The other simplification that was made was that all ingredients were equal. Strictly,
+in the data model (see figure~\ref{model}) an \emph{ingredient} is a combination of a
+\emph{food} and the quantity required for the recipe. Throughout this classification
+problem, the term ingredient has been used to refer to an attribute indicating
+whether or not a recipe has that ingredient or not -- i.e. a binary attribute. It may
+be possible with a significant amount of normalisation and discretisation to
+differentiate, say, 50g of sugar from 200g, which could be very different between
+bread, cakes and American muffins, for example.
+
+One small project that attempted to discretise ingredients was a small project
+called Cover:Cheese. \cite{covercheese} The project uses a genetic algorithm
+to adapt and learn appropriate recipes. Rather than numerical attributes over
+mixed units, the application breaks ingredients into nominal values of \emph{small},
+\emph{medium} and \emph{large} which are relative to normal expectations for
+that particular ingredient.
+
+\subsection{Comparing decision tree classifiers}
+
+\subsection{Ensemble methods}
+
 \subsection{Further Possibilties}
 
 \bibliographystyle{cell}
