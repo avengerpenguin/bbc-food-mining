@@ -6,6 +6,7 @@
 \floatstyle{boxed}
 \restylefloat{figure}
 \usepackage{mathtools}
+\usepackage{rotating}
 
 \title{Decision Tree Classification of Cuisines for BBC Food Recipes}
 \author{Ross Fenning}
@@ -264,8 +265,8 @@ ingredients.
   \caption{Descending frequency distribution of ingredients' appearances in recipes\label{ingredients-counts}}
 \end{figure}
 
-\subsubsection{Data Reduction}
-
+\subsection{Data Reduction}
+\label{sec:data-reduction}
 It may be preferable to clean the data of ingredients
 with too common an appearance as the amount of
 self-information \cite{reza1961introduction} for a very common ingredient is low. For
@@ -328,7 +329,7 @@ ingredients before any data mining even takes place.
 In tandem with the desire to prevent overfitting of the data, is a desire to build
 the smallest model or tree possible that best classifies the recipes. This
 aim is expressed both by Quinlan when introducing C4.5 \cite{quinlan1993c4}
-and by Witten and Frank \cite{witten2005data}, who introduce the
+and by Witten and Frank \cite{witten2011data}, who introduce the
 \emph{Minimum Description Length}, or MDL, principle. This principle is
 described as being a manifestation of \emph{Occam's Razor} within machine learning
 in that we prefer the simplest theory (i.e. classification model) that describes
@@ -398,7 +399,7 @@ attribute \emph{salt-pepper} that is \emph{true} for all recipes that has either
 Again, this reduces complexity and can even smooth out noise \cite{han2006data} and
 thus do more to increase accuracy than to reduce it.
 
-\subsubsection{Similarity and Dissimilarity}
+\subsection{Similarity and Dissimilarity}
 
 Given all the ingredients attributes are asymmetric, binary attributes, we can ignore
 the cuisine class attribute for now and calculate the similarity or distances
@@ -412,26 +413,28 @@ J_{\delta}(A,B) = 1 - J(A,B) = { { |A \cup B| - |A \cap B| } \over |A \cup B| }
 recipes. We can see such a matrix on a sample of five reasonably similar recipes
 in Table~\ref{tab:distance-matrix}.
 
-\begin{table}
+% ('amarettovanillacusta_70907', 'cremebrulee_91228', 'raspberryrippleicecr_91970', 'apricotupsidedowntar_91748', 'americanpancakes_72713')
+
+\begin{sidewaystable}
   \centering
-  \begin{tabular}{| p{2cm} | p{2cm} | p{2cm} | p{2cm} | p{2cm} | p{2cm} |}
+  \begin{tabular}{| p{6cm} | p{2.5cm} | p{2.5cm} | p{2.5cm} | p{2.5cm} | p{2.5cm} |}
     \hline
-     & Amaretto vanilla custard & Cr\`eme br\^ul\'ee & Raspberry ripple ice cream & Apricot upside-down tart & American pancakes \\
+                               & \textbf{Amaretto vanilla custard} & \textbf{Cr\`eme br\^ul\'ee} & \textbf{Raspberry ripple ice cream} & \textbf{Apricot upside-down tart} & \textbf{American pancakes} \\
     \hline
-    Amaretto vanilla custard   & 0    & 0 & 0.17 & 0.9 & 0.92 \\
+    \textbf{Amaretto vanilla custard}   & 0                        & 0                  & 0.1667                     & 0.9                      & 0.9167            \\
     \hline
-    Cr\`eme br\^ul\'ee         & 0    & 0 &      &     &      \\
+    \textbf{Cr\`eme br\^ul\'ee}         & 0                        & 0                  & 0.1667                     & 0.9                      & 0.9167            \\
     \hline
-    Raspberry ripple ice cream & 0.17 &   & 0    &     &      \\
+    \textbf{Raspberry ripple ice cream} & 0.1667                   & 0.1667             & 0                          & 0.9091                   & 0.9231            \\
     \hline
-    Apricot upside-down tart   & 0.9  &   &      & 0   &      \\
+    \textbf{Apricot upside-down tart}   & 0.9                      & 0.9                & 0.9091                     & 0                        & 0.7273            \\
     \hline
-    American pancakes          & 0.92 &   &      &     & 0    \\
+    \textbf{American pancakes}          & 0.9167                   & 0.9167             & 0.9231                     & 0.7273                   & 0                 \\
     \hline
   \end{tabular}
   \caption{Distance matrix between five dessert recipes}
   \label{tab:distance-matrix}
-\end{table}
+\end{sidewaystable}
 
 One immediate observation from Table~\ref{tab:distance-matrix} is that there
 are two recipes that come out with a distance of $0$, implying they have
@@ -450,12 +453,238 @@ and proximity.
 A further observation is that the sparse nature of the number of ingredients used
 on average per recipe out of all possible ingredients means that it is very easy for two
 recipes that have a few ingredients in common to come out with a large distance apart such
-as 0.9. The mean distance between any two classified recipes in this dataset is 0.94, which
+as 0.9. The mean distance between any two classified recipes in this dataset is 0.9381, which
 indicates a very sparse dataset in general.
 
-\subsection{Training a Cuisine Classifier}
-\subsection{Evaluating the Model}
-\subsection{Improving the Model}
+% black_pepper
+% olive_oil
+% strong_white_flour
+% yeast
+% coriander_seeds
+% cumin
+% guacamole
+% salsa
+\begin{sidewaystable}
+  \centering
+  \begin{tabular}{| p{3.8cm} | p{1.5cm} | p{1.5cm} | p{1.5cm} | p{1.3cm} | p{1.9cm} | p{1.3cm} | p{2.1cm} | p{1.3cm} |}
+    \hline
+    & \textbf{Black Pepper} & \textbf{Olive Oil} & \textbf{Strong White Flour} & \textbf{Yeast}  & \textbf{Coriander Seeds} & \textbf{Cumin}  & \textbf{Guacamole} & \textbf{Salsa}  \\
+    \hline
+    \textbf{Black Pepper}       & 0            & 0.4684    & 0.9931             & 0.9905 & 0.9600          & 0.9410 & 0.9997    & 0.9997 \\
+    \hline
+    \textbf{Olive Oil}          & 0.4684       & 0         & 0.9907             & 0.9876 & 0.9621          & 0.9419 & 0.9997    & 0.9997 \\
+    \hline
+    \textbf{Strong White Flour} & 0.9931       & 0.9907    & 0                  & 0.5733 & 0.9896          & 0.9933 & 1         & 1      \\
+    \hline
+    \textbf{Yeast}              & 0.9905       & 0.9876    & 0.5733             & 0      & 0.9864          & 0.9916 & 1         & 1      \\
+    \hline
+    \textbf{Coriander Seeds}    & 0.9600       & 0.9621    & 0.9896             & 0.9864 & 0               & 0.6630 & 1         & 1      \\
+    \hline
+    \textbf{Cumin}              & 0.9410       & 0.9419    & 0.9933             & 0.9916 & 0.6630          & 0      & 1         & 1      \\
+    \hline
+    \textbf{Guacamole}          & 0.9997       & 0.9997    & 1                  & 1      & 1               & 1      & 0         & 0.6667 \\
+    \hline
+    \textbf{Salsa}              & 0.9997       & 0.9997    & 1                  & 1      & 1               & 1      & 0.6667    & 0      \\
+    \hline
+  \end{tabular}
+  \caption{Distance matrix between eight ingredients}
+  \label{tab:food-distance-matrix}
+\end{sidewaystable}
+
+Table~\ref{tab:food-distance-matrix} shows an example distance matrix between eight
+different food ingredients. The closest two in the whole dataset are olive oil
+and black pepper, which were shown earlier to be incredibly common across all recipes.
+We can see some pairings that would be expected from cooking knowledge, such as
+cumin and coriander (both common in Indian cuisine) as well as salsa and guacamole
+(both frequently present in Mexican food). Note that there is a strong disconnect
+between the Indian spices and the Mexican condiments, which suggests no recipe
+has ever combined cumin and salsa, for example.
+
+Strong, white flour comes out very close to yeast, which is an influence from the large
+number of cakes and breads recipes in the BBC Food repertoire. The mean distance
+between every ingredient is approximately 0.997, which makes ingredients seem
+every more sparse than the recipes.
+
+\subsection{Induction Decision Tree Classification}
+\label{sec:idt-classification}
+
+As we will be trying an Inductive Decision Tree classification, we can refer
+initially to Quinlan's ID3 algorithm. \cite{quinlan1986induction} This is a top-down,
+recursive approach where we choose an attribute (i.e. an ingredient in this case),
+split the dataset into sets that each share values of that attribute (i.e. a
+set of recipes that have and a set that do not have the ingredient) and
+then repeat the process on those subsets. The recursion halts when there are no
+further ways to split the set or if everything in the set has the same class.
+
+The choice of which attribute to use to determine the split is a crucial part of
+any top-down, inductive tree classifier. In the case of ID3, an information-based
+approach is taken. This starts by calculating the entropy \cite{reza1961introduction}
+of the dataset:
+
+\begin{equation}
+  I(D)= - \sum_{i=1}^mp_i\log_2(p_i)
+\end{equation}
+
+\noindent where $D$ is the dataset of all recipes with $m$ cuisines
+and $p_i$ is the nonzero probability
+that an arbitrary recipe in $D$ belongs to cuisine $i$. Initially, the set of
+classified recipes has an entropy of $3.0195 bits$. This represents the information
+that would be required on average to classify a recipe. We then try to find
+an ingredient on which we can split the dataset and calculate the entropies thereof.
+The amount of information still required to classify an exact cuisine after
+partitioning $P$ can be expressed as a weighted average of the respective
+entropies:
+
+\begin{equation}
+  I_P(D) = \sum_{j=1}^n\frac{|D_j|}{D} x I(D_j)
+\end{equation}
+
+\noindent where $D$ has been split into $n$ partitions and $D_j$ is each of such
+partitions. Note that given ingredients are binary attributes, it will
+always be the case that $n = 2$ as we can only ever split recipe sets into
+those that do and those that do not have a given ingredient.
+
+The amount of information we have gained is this equal to the reduction in
+information required to classify after the partitioning:
+
+\begin{equation}
+  Gain(P) = I(D) - I_P(D)
+\end{equation}
+
+If we choose, for example, to split the recipe on whether it contains the
+ingredient \emph{gravy}, the entropy of the set without gravy is $3.0246$
+and the set of recipes with gravy has entropy $0.9568$. The information
+gain here is $0.0044$, but we can likely do better than choosing an
+ingredient at random. If we iterate through every possible ingredient, we
+find the best split is in fact on \emph{ginger}, with an information gain
+of $0.2129$.
+
+Running this with an arbitrary depth limit gives the tree shown in
+Figure~\ref{stub-decision-tree}. The leaves in green represent where
+the ID3 algorithm would naturally place a classification leaf for that
+cuisine whereas the leaves in red show where a subtree would be built
+were it not for the artifical depth limit put in place. The cuisine
+class placed in the latter represents the majority.
+
+Also at each classification leaf, we can
+see correct/incorrect classification counts similar to that produced
+by the C4.5 algorithm. The first number shows the number of recipes
+correctly classified with that the given cuisine and the second number
+indicates the number of recipes that are of a different cuisine that
+erroneously get classified by that leaf. These numbers not only give
+an idea of the error rate of the generated model, but also feed into the
+\emph{pessimistic pruning} \cite{karimi2000logical} that C4.5 employs
+to decide the error rate's maximum within an confidence interval is
+high enough to justify pruning whole subtrees. A subtree pruned in this
+way is replaced by the majority class therein.
+
+In our tree so far, we can see that on the ``yes'' branch of ``fish sauce?'',
+there are a total of 18 Thai/South-East Asian dishes and only 3 dishes
+in other cuisines. The classifications for other cuisines are based on
+very small numbers that raise concerns about statistical confidence and
+overfitting raised in the previous section. It is subtrees such as
+this one where C4.5's pessimistic pruning may consider replacing
+with a single leaf classifying everything thereunder as Thai/South-East Asian.
+Again, as discussed in the previous section, simplifying our decision tree
+model in this way may do more to smooth out noise and increase confidence in the
+error rates of the leaves than to harm the accuracy. Pruning our
+model in this way could well provide a better classifier for unseen recipes outside
+of the training set.
+
+\subsection{Classifiying with Weka}
+\label{sec:weka}
+
+Rather than reinvent the wheel and step through different combinations
+of algorithms, parameters and prunings, we can make use of the Weka \cite{witten2011data}
+machine learning suite developed at the University of Waikato, New Zealand.
+We can provide our recipes relation in ARFF format and use pre-built Java
+implementations of various classification algorithms.
+
+Firstly, we can run a vanilla ID3 tree classifier, which is essentially the full
+conclusion of the tree we started building in section~\ref{sec:idt-classification}.
+There are no real parameters to tweak this algorithm and we will simply test it on the
+same set on which it was trained for now.
+
+The tree generated is very deep and the resulting model correctly classifies 99.9369\%
+of recipes (all but three). However, it is very likely this has overfit the exact
+recipes provided and it might not be useful for classifying new recipes. It is
+however, a good first run for validating what was expected to happen. As in
+section~\ref{sec:idt-classification} we can see that the Weka implementation of ID3
+has also chosen ginger as the first split and that the top few levels
+of the tree match figure~\ref{stub-decision-tree}.
+
+Given the assumption that was made beforehand that running ID3
+(without either reducing the data or pruning the tree) would overfit the
+data and model too much of the noise, what can we say about the three recipes that it
+still couldn't classify? The full confusion matrix is not too interesting, but
+the incorrectly classified recipes were all ones erroneously marked as British
+dishes, whereas one was actually Italian and two French. Nothing surprising here
+that the first errors are confusing between similar European cuisines -- French and
+Italian cuisines both heavily influence modern, British cooking.
+
+Before looking at other algorithms, pruning or reducing the noise from the dataset,
+we shall explore how to evaluate the ID3-generated tree a little more accurately.
+When the accuracy comes out near 100\%, it looks as if the model is already working!
+Since we know that's unlikely to be the case, let's try and demonstrate that.
+
+\subsection{Splitting the training set}
+
+Instead of the somewhat circular approach of training and then evaluating a model on the
+same set, one approach is to have separate test data to the training data.
+
+Having separate training and test data is a good way to ensure your model has not
+overfit the training examples. A tree that has overfit all the noise and randomness of a training
+set will perform less well on any test examples. \cite{tetko1995neural} Weka provides
+an easy way to split the dataset into training and test data, so we can do a
+second run of ID3 with a 50\% split on the dataset in this way.
+
+The correct classification rate is now down to 48.3396\%, so it's struggling a bit to infer
+the cuisines of one half of the set using the other half. One downside of splitting the
+training set is that our model was retrained on fewer examples than in section~\ref{sec:weka}.
+Perhaps halving the number
+of traning examples was not ideal for increasing the accuracy. We can try again with only
+25\% of the recipes put aside for testing. This brings the accuracy up to 50.3785\%, which
+is better, but perhaps not significantly so.
+
+Finally, we can try putting aside only 10\% of the dataset to be used as test data
+and the accuracy climbs a little to 53.1513\%. These are small improvements, but a trend
+does seem to be present that removing items from the training examples is harming the
+accuracy as the supervised learning process has fewer datapoints with which to build a
+model. More importantly, however, is the fact that the accuracy seems to be no
+higher than around the 54\% no matter how the set is split. This suggests a significant
+error rate likely due to overfitting.
+
+\subsection{Cross-validation}
+
+We can get a better idea of the general accuracy/error rate for the ID3-based model
+by applying \emph{K-folds} cross-validation. In short we can achieve an estimate of
+the prediction accuracy of our classifier by repeating the training and testing
+phases over $K$ iterations, where in each iteration a $\frac{1}{K}$ subset of the dataset
+is taken out for validation. Essentially, we ultimately use every training example
+both for training and for testing.
+
+Weka allows us to rerun our ID3 classification using cross-validation in the testing
+phase. A 10-fold cross validation is chosen for no more reason than it is a reasonably
+popular value for $K$. \cite{mclachlan2005analyzing} The accuracy comes out at
+51.7234\% of recipes classified correctly, which supports further the idea that
+the ID3-based model is not going to perform much better than that on real, unseen
+recipes and may have overfit the training data.
+
+Before switching to algorithms that make use of tree pruning, we can first explore the
+suggestion of removing attributes from the dataset as suggested in
+section~\ref{sec:data-reduction}.
+
+\subsection{Applying data reduction}
+
+In section~\ref{sec:data-reduction}, it was discussed as to whether noise could be
+avoided by removing attributes that appear too infrequently (or too frequently) to be
+useful classifiers. The hypothesis was that we could use a \emph{minimum occurence} and
+a \emph{maximum occurence} threshold to determine whether an ingredient attribute
+is present enough in a recipe.
+
+\subsection{Pruning the Tree}
+
+\subsection{Evaluating on new recipes}
 
 \section{Discussion}
 \subsection{Difficulties}
