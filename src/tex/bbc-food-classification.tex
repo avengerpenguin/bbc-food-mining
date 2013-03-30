@@ -8,7 +8,6 @@
 \usepackage{mathtools}
 \usepackage{rotating}
 \usepackage{hyperref}
-\usepackage{verbatim}
 %\usepackage{rotfloat}
 \title{Decision Tree Classification of Cuisines for BBC Food Recipes}
 \author{Ross Fenning}
@@ -288,16 +287,25 @@ Thus a single instance would be, for example:
 This easily translates into CSV format for plotting and other applications, but if
 we wish to use the Weka machine learning application, we would be better producing
 our relation in ARFF format. \cite{witten2011data} An example of an ARFF file with only two
-instances of the relation would be:
+instances of the relation is shown in figure~\ref{fig:arff}.
 
-\verbatiminput{example.arff}
+\begin{figure}[h]
+  \verbatiminput{example.arff}
+  \caption{Example ARFF file showing recipe relation with two instances}
+  \label{fig:arff}
+\end{figure}
 
 The Caribbean line has more instances of \emph{0} than \emph{1} and this is in
 fact very much the case for all recipes across the whole set. It is shown in
 section~\ref{sec:distances} that the dataset is very sparse and thus a
-sparse ARFF file is more practical. \cite{witten2011data} For example:
+sparse ARFF file is more practical. \cite{witten2011data} An example is shown
+in figure~\ref{fig:arff-sparse}
 
-\verbatiminput{example_sparse.arff}
+\begin{figure}[h]
+  \verbatiminput{example_sparse.arff}
+  \caption{Example sparse ARFF file showing recipe relation with two instances}
+  \label{fig:arff-sparse}
+\end{figure}
 
 With the relation flattened and prepared to import into different applications
 or bespoke code, we can begin to explore the dataset in more detail.
@@ -320,7 +328,7 @@ many other cultures. A classification model might show deeper insight into which
 cultures overlap most with British cuisine.
 
 At the other end of the spectrum, there are some cuisines that have a very small
-number of recipes. Portguese has the lowest at only 14 recipes and African
+number of recipes. Portuguese has the lowest at only 14 recipes and African
 cooking has only 18 instances. These categories might be tricky when it comes to
 classification as any model born out of a supervised learning process will not
 have been exposed to many examples therein.
@@ -888,6 +896,7 @@ and Italian. In short, the most difficult classifications are ones we would pred
 with domain knowledge.
 
 \subsection{Evaluating on new recipes}
+\label{sec:evaluation}
 
 Using the decision tree produced by the CART algorithm in figure~\ref{fig:cart-decision-tree},
 we can do some manual evaluation on the uncategorised recipes. Ten recipes are chosen
@@ -946,8 +955,20 @@ classifier branches that only classify a small number of instances in the traini
 The rationale is to avoid overfitting to noise, but this means that cuisines with
 very few recipes are smoothed out along with that noise.
 
+The accuracy rate is arguably 70\% for this admittedly small evaluation sample. This
+is not far from the approximately 65\% accuracy predicted with cross-validation in
+section~\ref{sec:pruning}. However, a problem with this evaluation is that
+it suffers from the same British bias as the
+recipes learning dataset. The classifier has learnt that a recipe is far more
+likely to be British and the model produced is thus inclined to guess British
+in cases where it can't otherwise narrow down typical foods for other cuisines. The
+random sampling performed for this evaluation has also picked a large proportion
+of British items, so a favourable evaluation is hardly surprising (a model that
+always guessed British would have passed this evaluation with a 50\% accuracy).
 
-\section{Discussion}
+This British bias problem is discussed further in section~\ref{sec:british-bias}.
+
+\section{Discussion and Difficulties}
 \subsection{Using ingredients only as attributes}
 
 One of the first difficulties that surfaced was that some recipes simply could not
@@ -981,9 +1002,73 @@ mixed units, the application breaks ingredients into nominal values of \emph{sma
 \emph{medium} and \emph{large} which are relative to normal expectations for
 that particular ingredient.
 
-\subsection{Comparing decision tree classifiers}
+\subsection{British cuisine and other biases}
+\label{sec:british-bias}
+
+A significant British bias for BBC recipes is shown in figure~\ref{cuisines-barchart}
+and discussed in the evaluation in section~\ref{sec:evaluation}. Unsurprisingly
+for the BBC, a large proportion of the recipes are British cuisine. The problem
+is compounded as traditionally French, Italian or even Indian dishes have been
+fully adopted into British culture as being British in their own right (and
+usually altered from their traditional versions over time) due to the
+amount of time that has passed since they were first imported. This is also
+reflected in the English language with a large number of words of foreign origin
+now being fully considered English in the modern age.
+
+Machine learning and classification is a problem with classes of such vastly
+different sizes. \cite{provost2000machine} Some have attempted to solve this
+problem with ``downsampling'' the larger classes (i.e. remove instances
+randomly until there are few as the smaller sets) or ``upsampling'' (i.e.
+duplicate instances in the smaller sets so that they compete in size with
+the larger classes). \cite{provost2000machine}
+
+A downsampling approach is not ideal for the recipe problem as it would
+dramatically reduce the number of training instances overall (e.g. if
+all classes were downsampled to only 14 recipes each to match Portuguese). An
+upsampling approach might have better results, but it will artificially
+make the smaller cuisines seem less diverse than they really are and it
+is beyond the scope of this report.
+
+There are other more subtle biases in the data set within subsets from other
+potential classifications that were discarded for this problem. For example,
+main courses significantly outnumber desserts and cakes and food dishes
+greatly outnumber drinks and cocktails (as noted in section~\ref{sec:evaluation}).
+Underrepresented groups such as drinks and desserts do not classify well
+on a decision tree trained on recipes where foods and main courses were in
+the majority. This might be a sign of the need for ensemble methods as discussed
+in section~\ref{sec:ensemble}.
+
+It may be the case that it would have been better to retain categorical
+attributes such as course, occasion, etc. in the relation used such that
+a classifier could choose to branch on these before breaking down by
+ingredient if it deemed that a useful split. However, this would still
+be subject to the biases between those classes (e.g. a split between
+food and drink is unlikely to be chosen if drinks are a very small
+proportion of the overall set).
 
 \subsection{Ensemble methods}
+\label{sec:ensemble}
+
+The recipe dataset has multiple groups that can be identified within it, e.g.
+cuisines, occasions are shown in section~\ref{visualisation}. Classification
+within these different groups might vary with, for example, French desserts
+differing somewhat from French main courses in ingredients, despite both
+being within the French cuisine class. This is a good candidiate for ensemble
+methods where we combine different machine learning techniques.
+
+A good way to improve the classification developed earlier could be to do
+some unsupervised learning such as \emph{clustering} on the sets first. This
+will break the recipes into unlabelled groups based on their similarity and
+we can then run classification learning algorithms on the separate clusters.
+
+This allows each classifier to become an expert in only one subdomain of
+the recipe domain as a whole, where each subdomain is learnt through
+unsupervised learning rather than splitting the set in known ways. This might
+lead to distinctions a human expert may never have tried.
+
+\subsection{Comparing decision tree classifiers}
+
+\subsection{Interpreting output from Weka}
 
 \subsection{Further Possibilties}
 
