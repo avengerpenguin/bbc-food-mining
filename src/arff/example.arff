@@ -1,0 +1,21 @@
+@attribute cuisine {caribbean,east_european}
+@attribute black_pepper {0,1}
+@attribute breadcrumbs {0,1}
+@attribute butter {0,1}
+@attribute duck {0,1}
+@attribute egg {0,1}
+@attribute escalope {0,1}
+@attribute garlic {0,1}
+@attribute lime {0,1}
+@attribute mint {0,1}
+@attribute olive_oil {0,1}
+@attribute passion_fruit {0,1}
+@attribute plain_flour {0,1}
+@attribute rum {0,1}
+@attribute sage {0,1}
+@attribute spring_greens {0,1}
+@attribute sugar {0,1}
+
+@data
+caribbean,0,0,0,0,0,0,0,1,1,0,1,0,1,0,0,1
+east_european,1,1,1,1,1,1,1,0,0,1,0,1,0,1,1,0

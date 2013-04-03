@@ -1,4 +1,4 @@
-pdf: graphs uml tagclouds trees
+pdf: graphs uml tagclouds trees arff
 	mkdir -p build
 	cp src/tex/*.tex src/tex/*.bib build/
 	cd build && pdflatex bbc-food-classification.tex
@@ -18,6 +18,10 @@ python:
 csv:
 	mkdir -p build
 	cp src/csv/*.csv build/
+
+arff:
+	mkdir -p build
+	cp src/arff/*.arff build/
 
 dot:
 	mkdir -p build
@@ -40,6 +44,7 @@ graphs: csv
 
 trees: dot
 	cd build && dot -Tpng tree.dot >tree.png
+	cd build && dot -Tpng cart.dot >cart.png
 
 clean:
 	rm -rf build

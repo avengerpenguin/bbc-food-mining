@@ -8,6 +8,7 @@
 \usepackage{mathtools}
 \usepackage{rotating}
 \usepackage{hyperref}
+\usepackage{verbatim}
 
 \title{Decision Tree Classification of Cuisines for BBC Food Recipes}
 \author{Ross Fenning}
@@ -77,7 +78,7 @@ A recipe can be said to have the following attributes:
 For simplicity, we will focus initially on classifying by the cuisine attribute
 (i.e. using that attribute as the class) based on the ingredients expressed as
 vector of binary, nominal attributes, i.e. the ``carrot'' attribute is
-\emph{true} if and only if the given recipe contains carrots.
+\emph{1} if and only if the given recipe contains carrots (and \emph{0} otherwise).
 
 Whether a recipe is in season is a transient attribute, but could possibly be
 used in a different problem of learning which recipes are in season in different
@@ -273,16 +274,32 @@ problem, our relation will be:
 \end{equation}
 
 In \eqref{recipe-tuple} all ingredients are converted to nominal, binary attributes
-with values \emph{false} and \emph{true} to reflect whether that recipe contains
+with values \emph{0} and \emph{1} to reflect whether that recipe contains
 each of the possible ingredients or not. The cuisine attribute is a nominal
 attribute which is serving as our class attribute.
 
 Thus a single instance would be, for example:
 
 \begin{equation} \label{recipe-example}
-(Italian, True, False, ... ,True)
+(Italian,1,0,...,1)
 \end{equation}
 
+This easily translates into CSV format for plotting and other applications, but if
+we wish to use the Weka machine learning application, we would be better producing
+our relation in ARFF format. \cite{witten2011data} An example of an ARFF file with only two
+instances of the relation would be:
+
+\verbatiminput{example.arff}
+
+The Caribbean line has more instances of \emph{0} than \emph{1} and this is in
+fact very much the case for all recipes across the whole set. It is shown in
+section~\ref{sec:distances} that the dataset is very sparse and thus a
+sparse ARFF file is more practical. \cite{witten2011data} For example:
+
+\verbatiminput{example_sparse.arff}
+
+With the relation flattened and prepared to import into different applications
+or bespoke code, we can begin to explore the dataset in more detail.
 
 \subsection{Exploring the Dataset}
 
@@ -458,12 +475,12 @@ compound attributes from ingredients that strongly correlate. For instance, if
 we were to decide either through similarity calculations or domain knowledge
 that salt and pepper always appear in recipes together and negligibly does
 one appear without the other, we can replace these distrinct attributes with a compound
-attribute \emph{salt-pepper} that is \emph{true} for all recipes that has either.
+attribute \emph{salt-pepper} that is \emph{1} for all recipes that has either.
 Again, this reduces complexity and can even smooth out noise \cite{han2006data} and
 thus do more to increase accuracy than to reduce it.
 
 \subsection{Similarity and Dissimilarity}
-
+\label{sec:distances}
 Given all the ingredients attributes are asymmetric, binary attributes, we can ignore
 the cuisine class attribute for now and calculate the similarity or distances
 between recipes using the \emph{Jaccard distance}: \cite{han2006data}
