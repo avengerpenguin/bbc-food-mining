@@ -4,12 +4,12 @@
 \usepackage{graphicx}
 \usepackage{float}
 \floatstyle{boxed}
-\restylefloat{figure}
+%\restylefloat{figure}
 \usepackage{mathtools}
 \usepackage{rotating}
 \usepackage{hyperref}
 \usepackage{verbatim}
-
+%\usepackage{rotfloat}
 \title{Decision Tree Classification of Cuisines for BBC Food Recipes}
 \author{Ross Fenning}
 
@@ -829,8 +829,16 @@ perhaps for a simpler, more accurate model overall.
 Weka provides a SimpleCart
 implementation of this, which gives an accuracy of 64.691\%, which is the best
 model achieved so far. It also produces far shallower trees than both ID3
-and C4.5 (J48) for this particular problem. We will elect this one as our best
+and C4.5 (J48) for this particular problem. We will elect this one
+(figure~\ref{cart-decision-tree}) as our best
 classifier model so far for deeper evaluation.
+
+\begin{sidewaysfigure}
+  \centering
+  \includegraphics[width=\linewidth]{cart.png}
+  \label{fig:cart-decision-tree}
+  \caption{Full decision tree as built from CART algorithm}
+\end{sidewaysfigure}
 
 \subsection{Confusion}
 
