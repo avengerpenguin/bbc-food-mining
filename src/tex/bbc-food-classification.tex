@@ -1137,6 +1137,21 @@ by a Prolog interpreter to produce an expert system automatically. Such a modifi
 has already been attempted on C4.5 by Karimi and Hamilton \cite{karimi2000logical}
 and more improvements similar to this would certaintly be a benefit to Weka.
 
+\section{Conclusion}
+
+The Weka machine learning software was able to allow quick experimentation with
+the BBC Food recipes and develop a somewhat accurate classifier of cuisines from
+ingredients alone. The dataset offers more attributes that could be explored to
+improve the classification, but still suffers from an underlying asymmetry with
+things like British cuisine in a large majority and things like cocktails or
+African food in small minorities. Most decision tree classifiers seem to struggle
+with such asymmetry, which suggests a deeper problem exists to explore how to
+create a better model by combining techniques or preprocessing the data more.
+
+Overall, a lot of progress was made using simplified views of the data and
+prebuilt implementations of decision tree classifiers, but this is just a starting
+point for a lot more possibilities and approaches beyond the scope of this report.
+
 \bibliographystyle{cell}
 \bibliography{bibtex}
 \end{document}
