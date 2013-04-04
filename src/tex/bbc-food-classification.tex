@@ -29,6 +29,7 @@ South-east Asian cuisines, but perhaps they overlap in a lot of their
 ingredients due to relative geographical proximity?
 
 \subsection{The Problem}
+\label{sec:problem}
 
 This coursework will explore applying supervised machine learning
 techniques on food recipes and within it, we hope to create a model for
@@ -847,8 +848,8 @@ classifier model so far for deeper evaluation.
 \begin{sidewaysfigure}
   \centering
   \includegraphics[width=\linewidth]{cart.png}
-  \label{fig:cart-decision-tree}
   \caption{Full decision tree as built from CART algorithm}
+  \label{fig:cart-decision-tree}
 \end{sidewaysfigure}
 
 \subsection{Confusion}
@@ -1066,11 +1067,75 @@ the recipe domain as a whole, where each subdomain is learnt through
 unsupervised learning rather than splitting the set in known ways. This might
 lead to distinctions a human expert may never have tried.
 
+A simpler possibility is to split on known attributes such as course and
+occasion and train separate classifiers on those, but that approach
+presupposes that the subsets obtained in this way are beneficial to
+classification.
+
 \subsection{Comparing decision tree classifiers}
+
+A difficulty with the ID3 -- and even to some extend the C4.5 -- algorithm
+is that it will overfit the data without some form of intervention. While
+it is possible to stop building the tree if the information gain is below
+a given, absolute threshold, the implementation in Weka did not provide this
+as a parameter. The C4.5 implemention, J48, had some more control over
+thresholds and pruning, but it still produced a very large decision tree.
+
+The CART algorithm produced the simplest tree, which would seem the most
+favourable following the Minimum Description Length principle. It also
+had the best accuracy when cross-validated. This suggests for this
+particular problem that Quinlan's pessimistic pruning in C4.5 is less
+effective than the cost-complexity pruning in CART.
 
 \subsection{Interpreting output from Weka}
 
-\subsection{Further Possibilties}
+Another challenge when specifically using Weka implementations of ID3,
+C4.5 and CART is extracting the model for use in other code or applications.
+The stub tree demonstrated in figure~\ref{stub-decision-tree} was generated
+from a custom implementation of ID3 in Python code that could give output
+in the Dot language so that a tree graph can be drawn with Graphviz.
+
+The output from ID3 in Weka is primarily an ASCII representation of the tree
+that would require some parsing to interpret as a semantic model in
+other applications. The classification algorithms in Weka could benefit
+from additional features beneficial to software engineers such as outputting
+known transport formats (e.g. JSON, YAML, XML). The only additional output that
+was easy to enable was some generated Java code that relies on internal Weka
+classes and is overly verbose and difficult to read from a developer
+perspective.
+
+There were similar issues with C4.5/J48 and SimpleCart was even more difficult
+given that it did not even seem to have the option to generate the Java code.
+The tree shown in figure~\ref{fig:cart-decision-tree} was transcribed
+into the Dot language by hand -- a task that would be infeasible on the larger
+trees from ID3 and C4.5.
+
+All runs in Weka are exportable as a ``model'' file which is a raw Java
+serialisation dump of the instance of the classifier implementation that
+has been trained. This should be possible to import into a prebuilt
+framework that is capable of loading such a file using Weka
+classes and passing in Instance objects representing new data to be
+classified. This, however, requires that such a classification harness
+is already built and set up and couples the generated model tightly to
+the Weka API -- a recognised anti-pattern in production software development.
+
+Due to this, the serialised model saved in this way provides little more
+benefit than being able to persist models between closing and reopening
+the Weka application. The use of better exchange formats such as XML
+would both decouple the models from Weka and enable much more rapid prototying
+and evaluation of models.
+
+Given that decision tree models can be expressed as a series of logical rules, for
+example:
+
+\begin{equation}
+  ginger \land cumin \land lemongrass \to thai
+\end{equation}
+
+\noindent one suitable output format would be Prolog code that can be interpreted
+by a Prolog interpreter to produce an expert system automatically. Such a modification
+has already been attempted on C4.5 by Karimi and Hamilton \cite{karimi2000logical}
+and more improvements similar to this would certaintly be a benefit to Weka.
 
 \bibliographystyle{cell}
 \bibliography{bibtex}
