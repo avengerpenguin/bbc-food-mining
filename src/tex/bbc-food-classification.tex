@@ -9,6 +9,8 @@
 \usepackage{rotating}
 \usepackage{hyperref}
 %\usepackage{rotfloat}
+\usepackage{placeins}
+
 \title{Decision Tree Classification of Cuisines for BBC Food Recipes}
 \author{Ross Fenning}
 
@@ -203,24 +205,6 @@ techniques have historically been for numeric data. A popular technique that
 has risen with the increase of textual and higher-dimensional data from places
 such as social networks is the \emph{tag cloud}. \cite{han2006data}
 
-\begin{figure}[b!]
-  \includegraphics[width=\linewidth]{ingredients_tags.png}
-  \caption{Tag cloud showing popularity of ingredients across all recipes}
-  \label{fig:tagcloud}
-\end{figure}
-
-\begin{figure}[p]
-  \includegraphics[width=\linewidth]{indian_ingredients_tags.png}
-  \caption{Tag cloud showing popularity of ingredients for Indian recipes}
-  \label{fig:tagcloud-indian}
-\end{figure}
-
-\begin{figure}[p]
-  \includegraphics[width=\linewidth]{italian_ingredients_tags.png}
-  \caption{Tag cloud showing popularity of ingredients for Italian recipes}
-  \label{fig:tagcloud-italian}
-\end{figure}
-
 Such a tag cloud can be seen in figure~\ref{fig:tagcloud}. There is a clear
 abundance of black pepper and olive oil and we can see, at a glance, an
 impression of all the ingredients that appear in the most recipes. Where
@@ -243,7 +227,25 @@ The tag cloud also gives a quick way to view subsets of recipes by other
 criteria, e.g. recipes marked as pertaining
 to Christmas as in figure~\ref{fig:tagcloud-christmas}.
 
-\begin{figure}[h]
+\begin{figure}[p]
+  \includegraphics[width=\linewidth]{ingredients_tags.png}
+  \caption{Tag cloud showing popularity of ingredients across all recipes}
+  \label{fig:tagcloud}
+\end{figure}
+
+\begin{figure}[p]
+  \includegraphics[width=\linewidth]{indian_ingredients_tags.png}
+  \caption{Tag cloud showing popularity of ingredients for Indian recipes}
+  \label{fig:tagcloud-indian}
+\end{figure}
+
+\begin{figure}[p]
+  \includegraphics[width=\linewidth]{italian_ingredients_tags.png}
+  \caption{Tag cloud showing popularity of ingredients for Italian recipes}
+  \label{fig:tagcloud-italian}
+\end{figure}
+
+\begin{figure}[p]
   \includegraphics[width=\linewidth]{christmas_ingredients_tags.png}
   \caption{Tag cloud showing popularity of ingredients for Christmas}
   \label{fig:tagcloud-christmas}
@@ -290,10 +292,16 @@ we wish to use the Weka machine learning application, we would be better produci
 our relation in ARFF format. \cite{witten2011data} An example of an ARFF file with only two
 instances of the relation is shown in figure~\ref{fig:arff}.
 
-\begin{figure}[h]
+\begin{figure}[p]
   \verbatiminput{example.arff}
   \caption{Example ARFF file showing recipe relation with two instances}
   \label{fig:arff}
+\end{figure}
+
+\begin{figure}[p]
+  \verbatiminput{example_sparse.arff}
+  \caption{Example sparse ARFF file showing recipe relation with two instances}
+  \label{fig:arff-sparse}
 \end{figure}
 
 The Caribbean line has more instances of \emph{0} than \emph{1} and this is in
@@ -302,25 +310,20 @@ section~\ref{sec:distances} that the dataset is very sparse and thus a
 sparse ARFF file is more practical. \cite{witten2011data} An example is shown
 in figure~\ref{fig:arff-sparse}
 
-\begin{figure}[h]
-  \verbatiminput{example_sparse.arff}
-  \caption{Example sparse ARFF file showing recipe relation with two instances}
-  \label{fig:arff-sparse}
-\end{figure}
-
 With the relation flattened and prepared to import into different applications
 or bespoke code, we can begin to explore the dataset in more detail.
 
 \subsection{Exploring the Dataset}
 \label{sec:exploring}
 
-The breakdown of the cuisine category is shown in Figure~\ref{cuisines-barchart}
-for only those recipes that have a cuisine set.
-
-\begin{figure}[p]
+\begin{figure}[t]
   \includegraphics[width=\linewidth]{cuisines.png}
   \caption{Number of recipes for each cuisine on BBC Food\label{cuisines-barchart}}
 \end{figure}
+
+The breakdown of the cuisine category is shown in Figure~\ref{cuisines-barchart}
+for only those recipes that have a cuisine set.
+
 
 British recipes are clearly dominant, which is likely not surprisingly for the
 BBC, but it might also be a symptom of British cooking's tendancy to borrow and
@@ -339,11 +342,6 @@ that the number of recipes that contain the top 50 ingredients follows a
 Pareto-looking curve when the ingredients themselves are arranged in descending
 order of their appearance.
 
-\begin{figure}[p]
-  \includegraphics[width=\linewidth]{top_ingredients_counts.png}
-  \caption{Number of recipes that use the top 50 ingredients\label{top-ingredients}}
-\end{figure}
-
 Perhaps unsurprisingly for a collection of professional recipes, olive oil is the most
 common ingredient. The popular foods all seem to be very common ingredients to most
 dishes, but this quickly descends to a long tail of foods that only appear in a few
@@ -352,12 +350,18 @@ Figure~\ref{ingredients-counts} shows the full curve when we include all of the
 ingredients.
 
 \begin{figure}[p]
+  \includegraphics[width=\linewidth]{top_ingredients_counts.png}
+  \caption{Number of recipes that use the top 50 ingredients\label{top-ingredients}}
+\end{figure}
+
+\begin{figure}[p]
   \includegraphics[width=\linewidth]{ingredients_counts.png}
   \caption{Descending frequency distribution of ingredients' appearances in recipes\label{ingredients-counts}}
 \end{figure}
 
 \subsection{Data Reduction}
 \label{sec:data-reduction}
+
 It may be preferable to clean the data of ingredients
 with too common an appearance as the amount of
 self-information \cite{reza1961introduction} for a very common ingredient is low. For
@@ -651,13 +655,6 @@ ingredient at random. If we iterate through every possible ingredient, we
 find the best split is in fact on \emph{ginger}, with an information gain
 of $0.2129$.
 
-\begin{figure}[t]
-  \begin{center}
-    \includegraphics[width=\linewidth]{tree.png}
-  \end{center}
-  \caption{First few layers of decision tree from ID3 classification\label{stub-decision-tree}}
-\end{figure}
-
 Running this with an arbitrary depth limit gives the tree shown in
 Figure~\ref{stub-decision-tree}. The leaves in green represent where
 the ID3 algorithm would naturally place a classification leaf for that
@@ -725,6 +722,13 @@ Before looking at other algorithms, pruning or reducing the noise from the datas
 we shall explore how to evaluate the ID3-generated tree a little more accurately.
 When the accuracy comes out near 100\%, it looks as if the model is already working!
 Since we know that's unlikely to be the case, let's try and demonstrate that.
+
+\begin{figure}[p]
+  \begin{center}
+    \includegraphics[width=\linewidth]{tree.png}
+  \end{center}
+  \caption{First few layers of decision tree from ID3 classification\label{stub-decision-tree}}
+\end{figure}
 
 \subsection{Splitting the training set}
 
@@ -842,7 +846,7 @@ Weka provides a SimpleCart
 implementation of this, which gives an accuracy of 64.691\%, which is the best
 model achieved so far. It also produces far shallower trees than both ID3
 and C4.5 (J48) for this particular problem. We will elect this one
-(figure~\ref{cart-decision-tree}) as our best
+(figure~\ref{fig:cart-decision-tree}) as our best
 classifier model so far for deeper evaluation.
 
 \begin{sidewaysfigure}
@@ -950,7 +954,7 @@ never classified with the final model. Their low incidence was predicted in
 section~\ref{sec:exploring} to be problematic for classifying those cuisines and this
 indeed seems to be the case.
 
-As dicussed in section~\ref{pruning} with regard to pruning and specifically the CART
+As dicussed in section~\ref{sec:pruning} with regard to pruning and specifically the CART
 algorithm, a lower error rate on unseen examples is generally achieved by pruning
 classifier branches that only classify a small number of instances in the training set.
 The rationale is to avoid overfitting to noise, but this means that cuisines with

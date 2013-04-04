@@ -28,7 +28,7 @@ if __name__ == '__main__':
             if len(food_counts) >= 150:
                 break
 
-    tags = make_tags(food_counts, minsize=10, maxsize=100)
-    create_tag_image(tags, arguments['<output_file>'], size=(1000, 600), layout=4, fontname='Lobster')
+    tags = make_tags(food_counts, minsize=10, maxsize=80)
+    create_tag_image(tags, arguments['<output_file>'], size=(900, 550), layout=4, fontname='Lobster')
 
 
