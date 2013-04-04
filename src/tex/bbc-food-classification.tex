@@ -18,6 +18,7 @@
 \maketitle
 
 \section{Introduction}
+\label{sec:intro}
 
 Most recipes in modern, British cooking have
 originated in several different cultures and cuisines, such as Indian,
@@ -302,6 +303,7 @@ With the relation flattened and prepared to import into different applications
 or bespoke code, we can begin to explore the dataset in more detail.
 
 \subsection{Exploring the Dataset}
+\label{sec:exploring}
 
 The breakdown of the cuisine category is shown in Figure~\ref{cuisines-barchart}
 for only those recipes that have a cuisine set.
@@ -788,6 +790,7 @@ to look at pruning the tree of branches that actually contribute more to the err
 aren't actually there in the domain).
 
 \subsection{Pruning the Tree}
+\label{sec:pruning}
 
 Other inductive tree algorithms related to ID3 such as C4.5 and CART employ some
 level of tree \emph{pruning}. In this context, pruning means to identify a node
@@ -886,6 +889,16 @@ with domain knowledge.
 
 \subsection{Evaluating on new recipes}
 
+Using the decision tree produced by the CART algorithm in figure~\ref{fig:cart-decision-tree},
+we can do some manual evaluation on the uncategorised recipes. Ten recipes are chosen
+at random and the cuisine classification from the decision tree is compared to best
+judgement from knowledge of the food domain.
+
+The results of the evaluation are shown in table~\ref{tab:evaluation}. One difficulty
+in the manual classification was that the overlapping boundary between French and British -- as
+mentioned briefly in section~\ref{sec:intro} -- caused some recipes to classified
+as British, but some would argue that they are French in origin.
+
 \begin{sidewaystable}
   \centering
   \begin{tabular}{| p{9cm} | p{3cm} | p{9cm} |}
@@ -914,7 +927,25 @@ with domain knowledge.
     \hline
   \end{tabular}
   \caption{Classifying random, uncategorised BBC recipes using CART-generated model}
+  \label{tab:evaluation}
 \end{sidewaystable}
+
+Another clear observation is that the model utterly fails to classify drinks and cocktails.
+This is due to the relatively low number of recipes that are cocktails compared
+to food dishes, so the model achieves a better error rate overall focusing on the latter
+only. This is a pervasive problem in that any grouping with a high number of instances
+dominates the model more than fringe groups. The biggest blind spot that comes out
+of this is that Portuguese, African, East European and South American recipes are simply
+never classified with the final model. Their low incidence was predicted in
+section~\ref{sec:exploring} to be problematic for classifying those cuisines and this
+indeed seems to be the case.
+
+As dicussed in section~\ref{pruning} with regard to pruning and specifically the CART
+algorithm, a lower error rate on unseen examples is generally achieved by pruning
+classifier branches that only classify a small number of instances in the training set.
+The rationale is to avoid overfitting to noise, but this means that cuisines with
+very few recipes are smoothed out along with that noise.
+
 
 \section{Discussion}
 \subsection{Using ingredients only as attributes}
