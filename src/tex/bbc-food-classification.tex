@@ -33,7 +33,7 @@ ingredients due to relative geographical proximity?
 \subsection{The Problem}
 \label{sec:problem}
 
-This coursework will explore applying supervised machine learning
+This report will explore applying supervised machine learning
 techniques on food recipes and within it, we hope to create a model for
 identifying the cultural origin of a recipe from the ingredients used
 therein.
@@ -47,7 +47,7 @@ vegetarian) and expected time required to prepare the meal.
 However, only around a third of the recipes have actually been manually
 categorised as to which cuisine they are. Marking the remaining
 two-thirds with their respective cuisine would be further manual effort
-by editorial staff. A model that is able to assign or at least suggest
+by editorial staff, so a model that is able to assign or at least suggest
 a cuisine based on supervised learning from the known set could be a useful
 tool in improving the metadata on BBC Food recipes.
 
@@ -56,7 +56,7 @@ about food, recipes and cuisine might be able to suggest new recipes
 not yet created by a human. Another use might be to suggest suitable things to make
 based on what ingredients a person has or what is currently in season. Perhaps
 another system could suggest ways to tweak a recipe to make it suitable for
-vegetarians or plan meals for an occasion based on dietary or monetary contraints.
+vegetarians or plan meals for an occasion based on dietary or monetary constraints.
 
 \subsection{Attributes}
 
@@ -73,7 +73,7 @@ A recipe can be said to have the following attributes:
   (e.g. vegetarian, dairy-free)
 \item Whether it's in season
 \item For which course it is suitable (e.g. starter, dessert).
-\item Whether it pertains to an occasion (e.g. Burn's Night, Christmas)
+\item Whether it pertains to an occasion (e.g. Burns Night, Christmas)
 \item Which BBC programme has featured the recipe
 \item Which chef created the recipe
 \end{itemize}
@@ -94,7 +94,7 @@ Occasion is a categorical attribute that marks certain recipes as being typical
 dishes served at particular festivals and celebrations. This could lead to
 another classification problem, but for cuisine classification, it is likely to
 be reasonably redundant due to the cultural basis of such festivals. For
-instance, there are unlikely to be many Italian Burn's Night dishes nor Mexican
+instance, there are unlikely to be many Italian Burns Night dishes nor Mexican
 Diwali recipes.
 
 The numerical attributes such as number of people the recipe is to serve or the
@@ -177,16 +177,16 @@ intended for human reading and is not useful as an attribute for machine
 learning. It could be possible to massage some attributes out of these steps
 using natural language techniques, but that is not explored here.
 
-Finally, we can see that recipes also have the additional attributes of
-diets, chefs and programmes.
+Finally, we can see that recipes also have optional links to diets for which
+the recipe is suitable, the chef that created it and programmes that featured
+it. For this report, we are interested in the cuisine and
+figure~\ref{cuisine-set} shows how many
+recipes are assigned to a cuisine on the BBC Food website.
 
 \begin{figure}[h]
   \includegraphics[width=\linewidth]{cuisine_set.png}
   \caption{Number of recipes that have a cuisine on BBC Food\label{cuisine-set}}
 \end{figure}
-
-Focusing on the cuisine attribute, Figure~\ref{cuisine-set} shows how many
-recipes are assigned to a cuisine on the BBC Food website.
 
 It seems that approximately 30\% of the recipes on the BBC Food website are
 assigned whilst 70\% haven't been categorised in this way. Given that one
@@ -194,7 +194,7 @@ such uncategorised recipe is
 \emph{American herb pancakes with cottage cheese and pastrami}, which indicates
 its country of origin in the title, it would appear that the cuisine categories
 are missing due to a lack of time or resources to add them by hand. This
-strengthens the utility of a model or system that could pre-populate the cuisine
+strengthens the utility of a model or system that could prepopulate the cuisine
 category automatically.
 
 \subsection{Visualisation of different classes}
@@ -203,14 +203,16 @@ Visualisation of relations with of the order of 1,000 attributes is not as
 trivial a plotting 2-dimensional vectors in a plane and a lot of visualisation
 techniques have historically been for numeric data. A popular technique that
 has risen with the increase of textual and higher-dimensional data from places
-such as social networks is the \emph{tag cloud}. \cite{han2006data}
+such as social networks is the \emph{tag cloud}. \cite[p.~64]{han2006data}
 
 Such a tag cloud can be seen in figure~\ref{fig:tagcloud}. There is a clear
 abundance of black pepper and olive oil and we can see, at a glance, an
 impression of all the ingredients that appear in the most recipes. Where
 this visualisation becomes even more useful is when compared side-by-side
-with the same tag cloud narrowed down to only, say, Indian cusines, as
-shown in figure~\ref{fig:tagcloud-indian}.
+with the same tag cloud narrowed down to only, say, Indian cuisines, as
+shown in figure~\ref{fig:tagcloud-indian}. Here, it can be seen that ingredients
+that are most common within Indian food differ somewhat to those
+that are popular in cuisine in general.
 
 The Italian-only tag cloud in figure~\ref{fig:tagcloud-italian} has
 a very different aesthetic in that it generally looks a lot more sparse. This
@@ -277,9 +279,9 @@ problem, our relation will be:
 \end{equation}
 
 In \eqref{recipe-tuple} all ingredients are converted to nominal, binary attributes
-with values \emph{0} and \emph{1} to reflect whether that recipe contains
-each of the possible ingredients or not. The cuisine attribute is a nominal
-attribute which is serving as our class attribute.
+with values \emph{1} and \emph{0} to reflect whether that recipe contains
+each of the possible ingredients or not respectively. The cuisine attribute is a nominal
+attribute which serves as our class attribute.
 
 Thus a single instance would be, for example:
 
@@ -289,7 +291,7 @@ Thus a single instance would be, for example:
 
 This easily translates into CSV format for plotting and other applications, but if
 we wish to use the Weka machine learning application, we would be better producing
-our relation in ARFF format. \cite{witten2011data} An example of an ARFF file with only two
+our relation in ARFF format. \cite[p.~52]{witten2011data} An example of an ARFF file with only two
 instances of the relation is shown in figure~\ref{fig:arff}.
 
 \begin{figure}[p]
@@ -325,8 +327,8 @@ The breakdown of the cuisine category is shown in Figure~\ref{cuisines-barchart}
 for only those recipes that have a cuisine set.
 
 
-British recipes are clearly dominant, which is likely not surprisingly for the
-BBC, but it might also be a symptom of British cooking's tendancy to borrow and
+British recipes are clearly dominant, which is likely not surprising for the
+BBC, but it might also be a symptom of British cooking's tendency to borrow and
 derive from
 many other cultures. A classification model might show deeper insight into which
 cultures overlap most with British cuisine.
@@ -424,7 +426,7 @@ ingredients before any data mining even takes place.
 In tandem with the desire to prevent overfitting of the data, is a desire to build
 the smallest model or tree possible that best classifies the recipes. This
 aim is expressed both by Quinlan when introducing C4.5 \cite{quinlan1993c4}
-and by Witten and Frank \cite{witten2011data}, who introduce the
+and by Witten and Frank \cite[p.~183]{witten2011data}, who introduce the
 \emph{Minimum Description Length}, or MDL, principle. This principle is
 described as being a manifestation of \emph{Occam's Razor} within machine learning
 in that we prefer the simplest theory (i.e. classification model) that describes
@@ -464,7 +466,7 @@ classification.
 Unfortunately, the assumption that the algorithm alone will behave optimally in this
 way cannot be relied upon. Constructing an optimal decision tree is shown to be
 an NP-complete problem \cite{hyafil1976constructing}, which is why algorithms
-like C4.5 are greedy and nonbacktracking \cite{quinlan1993c4}, favouring
+like C4.5 are greedy and non-backtracking \cite{quinlan1993c4}, favouring
 maximising local optima only at each iteration. An ancestor to C4.5, CLS,
 uses a lookahead to a fixed depth similar to Minimax \cite{quinlan1986induction},
 but this can be computational expensive. Given we usually want supervised
@@ -489,10 +491,14 @@ Another consideration for data reduction can be to reduce dimensionality by crea
 compound attributes from ingredients that strongly correlate. For instance, if
 we were to decide either through similarity calculations or domain knowledge
 that salt and pepper always appear in recipes together and negligibly does
-one appear without the other, we can replace these distrinct attributes with a compound
+one appear without the other, we can replace these distinct attributes with a compound
 attribute \emph{salt-pepper} that is \emph{1} for all recipes that has either.
 Again, this reduces complexity and can even smooth out noise \cite{han2006data} and
 thus do more to increase accuracy than to reduce it.
+
+There is no immediate need to create compound attributes in this way, but
+we can keep it in mind and see if there are any candidates for combining when
+looking at distances between attributes in section~\ref{sec:distances}.
 
 \subsection{Similarity and Dissimilarity}
 \label{sec:distances}
@@ -539,9 +545,8 @@ amaretto vanilla custard is classified as \emph{British}. It is clear that any c
 of the cuisine based solely on the ingredients is going to put these two recipes in
 the same class (although which it will choose is less clear) and thus we can see
 \emph{before even running any supervised learning} that there will be errors when using
-just ingredients as the training attributes. It is also particularly of note when
-we refer to domain knowledge on
-cooking and cuisine that our first such case is a confusion between a French and a British
+just ingredients as the training attributes. It is also particularly of note
+that our first such case is a confusion between a French and a British
 dish given these are two cuisines with significant overlap from centuries of cultural mixing
 and proximity.
 
@@ -659,7 +664,7 @@ Running this with an arbitrary depth limit gives the tree shown in
 Figure~\ref{stub-decision-tree}. The leaves in green represent where
 the ID3 algorithm would naturally place a classification leaf for that
 cuisine whereas the leaves in red show where a subtree would be built
-were it not for the artifical depth limit put in place. The cuisine
+were it not for the artificial depth limit put in place. The cuisine
 class placed in the latter represents the majority.
 
 Also at each classification leaf, we can
@@ -681,19 +686,19 @@ very small numbers that raise concerns about statistical confidence and
 overfitting raised in the section~\ref{sec:data-reduction}. It is subtrees such as
 this one where C4.5's pessimistic pruning may consider replacing
 with a single leaf classifying everything thereunder as Thai/South-East Asian.
-Again, as discussed in the section~\ref{sec:data-reduction}, simplifying our decision tree
+Again, as discussed in section~\ref{sec:data-reduction}, simplifying our decision tree
 model in this way may do more to smooth out noise and increase confidence in the
 error rates of the leaves than to harm the accuracy. Pruning our
 model in this way could well provide a better classifier for unseen recipes outside
 of the training set.
 
-\subsection{Classifiying with Weka}
+\subsection{Classifying with Weka}
 \label{sec:weka}
 
-Rather than reinvent the wheel and step through different combinations
+Rather than reinvent the wheel and reimplement different combinations
 of algorithms, parameters and prunings, we can make use of the Weka \cite{witten2011data}
 machine learning suite developed at the University of Waikato, New Zealand.
-We can provide our recipes relation in ARFF format and use pre-built Java
+We can provide our recipes relation in ARFF format and use prebuilt Java
 implementations of various classification algorithms.
 
 Firstly, we can run a vanilla ID3 tree classifier, which is essentially the full
@@ -703,10 +708,9 @@ same set on which it was trained for now.
 
 The tree generated is very deep and the resulting model correctly classifies 99.9369\%
 of recipes (all but three). However, it is very likely this has overfit the exact
-recipes provided and it might not be useful for classifying new recipes. It is
-however, a good first run for validating what was expected to happen. As in
-section~\ref{sec:idt-classification} we can see that the Weka implementation of ID3
-has also chosen ginger as the first split and that the top few levels
+recipes provided and it might not be useful for classifying new recipes. As in
+section~\ref{sec:idt-classification}, the Weka implementation of ID3
+has also chosen ginger as the first split and the top few levels
 of the tree match figure~\ref{stub-decision-tree}.
 
 Given the assumption that was made beforehand that running ID3
@@ -720,8 +724,10 @@ Italian cuisines also both heavily influence modern, British cooking.
 
 Before looking at other algorithms, pruning or reducing the noise from the dataset,
 we shall explore how to evaluate the ID3-generated tree a little more accurately.
-When the accuracy comes out near 100\%, it looks as if the model is already working!
-Since we know that's unlikely to be the case, let's try and demonstrate that.
+When the accuracy comes out near 100\%, it looks as if the model is already working.
+This is unlikely to be the case for recipes in general as we tested the model on
+the exact recipes used to train it, so we need to find better ways to estimate
+the accuracy of the model when applied to unseen recipes.
 
 \begin{figure}[p]
   \begin{center}
@@ -741,7 +747,7 @@ set will perform less well on any test examples. \cite{tetko1995neural} Weka pro
 an easy way to split the dataset into training and test data, so we can do a
 second run of ID3 with a 50\% split on the dataset in this way.
 
-The correct classification rate is now down to 48.3396\%, so it's struggling a bit to infer
+The correct classification rate is now down to 48.3396\%, so it is struggling to infer
 the cuisines of one half of the set using the other half. One downside of splitting the
 training set is that our model was retrained on fewer examples than in section~\ref{sec:weka}.
 Perhaps halving the number
@@ -752,15 +758,17 @@ is better, but perhaps not significantly so.
 Finally, we can try putting aside only 10\% of the dataset to be used as test data
 and the accuracy climbs a little to 53.1513\%. These are small improvements, but a trend
 does seem to be present that removing items from the training examples is harming the
-accuracy as the supervised learning process has fewer datapoints with which to build a
+accuracy as the supervised learning process has fewer data points with which to build a
 model. More importantly, however, is the fact that the accuracy seems to be no
 higher than around the 54\% no matter how the set is split. This suggests a significant
-error rate likely due to overfitting.
+error rate, perhaps due to overfitting given the trees generated so far are very
+large.
 
 \subsection{Cross-validation}
 
 We can get a better idea of the general accuracy/error rate for the ID3-based model
-by applying \emph{K-folds} cross-validation. In short we can achieve an estimate of
+by applying \emph{K-folds} cross-validation. \cite[p.~364]{han2006data}
+In short, we can achieve an estimate of
 the prediction accuracy of our classifier by repeating the training and testing
 phases over $K$ iterations, where in each iteration a $\frac{1}{K}$ subset of the dataset
 is taken out for validation. Essentially, we ultimately use every training example
@@ -788,13 +796,13 @@ is used in our training set.
 It is simple enough to prepare the data in ARFF format again, but drop attributes from
 the relation that represent ingredients that appear in too few or too many recipes.
 Setting the minimum occurrence threshold to 10 (and continuing to use cross-validation)
-produced a model with a predicted accuracy of 51.3241\% and setting the maximum
-occurrence threshold to 1,000 along with that resulted in an accuracy of 52.5641\%. It
+produces a model with a predicted accuracy of 51.3241\% and setting the maximum
+occurrence threshold to 1,000 along with that results in an accuracy of 52.5641\%. It
 seems to be that case that any dimensional-reduction in the dataset is not having a
 large benefit to the model generated by ID3.
 
 As also discussed in section~\ref{sec:data-reduction}, it is not unreasonable
-to trust the information gain heuristic in ID3 and related algorithms to choose
+to trust to some extent the information gain heuristic in ID3 and related algorithms to choose
 to split on attributes that are informative in classifying recipes and avoid
 -- at least initially -- the attributes that are of little use. A better
 approach to improving the model's accuracy on unseen recipes might be
@@ -813,7 +821,7 @@ from being built (i.e. by halting the recursion for some reason other than
 the normal base cases) is known as \emph{prepruning} and removing subtrees from
 a fully-built tree is known as \emph{postpruning}.
 
-The C4.5 algorithm and its Java implementating in Weka, J48, allows postpruning
+The C4.5 algorithm and its Java implementation in Weka, J48, allows postpruning
 of branches where the confidence of some of the leaves' error rates is questionable
 (as discussed in section \ref{sec:data-reduction}).
 
@@ -894,11 +902,13 @@ to see where the errors still lie and how they fit in with our understanding of 
 The confusion matrix shows many recipes are classified as British, when they are in
 fact -- in descending order of confusion -- French, Italian, American or Indian. This
 supports the knowledge that British cooking is the most likely to borrow
-from other cultures. Chinese food has the biggest confusion with British (again,
+from other cultures. This also highlights a large bias towards British recipes in
+the dataset, which is discussed in section~\ref{sec:british-bias}.
+
+Chinese food has the biggest confusion with British (again,
 another culture from which we borrow a lot of cuisine) and Thai/South-East Asian (a
 reasonably close neighbour geographically). Spanish is confused mostly with British
-and Italian. In short, the most difficult classifications are ones we would predict
-with domain knowledge.
+and Italian. In short, the most difficult classifications are ones we would predict.
 
 \subsection{Evaluating on new recipes}
 \label{sec:evaluation}
@@ -950,11 +960,11 @@ to food dishes, so the model achieves a better error rate overall focusing on th
 only. This is a pervasive problem in that any grouping with a high number of instances
 dominates the model more than fringe groups. The biggest blind spot that comes out
 of this is that Portuguese, African, East European and South American recipes are simply
-never classified with the final model. Their low incidence was predicted in
+never classified at all with the final model. Their low incidence was predicted in
 section~\ref{sec:exploring} to be problematic for classifying those cuisines and this
 indeed seems to be the case.
 
-As dicussed in section~\ref{sec:pruning} with regard to pruning and specifically the CART
+As discussed in section~\ref{sec:pruning} with regard to pruning and specifically the CART
 algorithm, a lower error rate on unseen examples is generally achieved by pruning
 classifier branches that only classify a small number of instances in the training set.
 The rationale is to avoid overfitting to noise, but this means that cuisines with
@@ -966,7 +976,7 @@ section~\ref{sec:pruning}. However, a problem with this evaluation is that
 it suffers from the same British bias as the
 recipes learning dataset. The classifier has learnt that a recipe is far more
 likely to be British and the model produced is thus inclined to guess British
-in cases where it can't otherwise narrow down typical foods for other cuisines. The
+in cases where it cannot otherwise narrow down using typical foods for other cuisines. The
 random sampling performed for this evaluation has also picked a large proportion
 of British items, so a favourable evaluation is hardly surprising (a model that
 always guessed British would have passed this evaluation with a 50\% accuracy).
@@ -977,19 +987,21 @@ This British bias problem is discussed further in section~\ref{sec:british-bias}
 \subsection{Using ingredients only as attributes}
 
 One of the first difficulties that surfaced was that some recipes simply could not
-be told apart by ingredients alone. The example that came up was the fact that
+be told apart by ingredients alone. The example from section~\ref{sec:distances} was
 cr\`eme br\^ul\'ee and amaretto vanilla custard had identical ingredients, despite
 supposedly being French and British respectively. Do they differ due to method? Is
 it solely in the names?
 
-The models may have been more predictive if further attributes were retrieved.
+The models may have been more predictive if further attributes were used.
 Other attributes were identified, but omitted for simplicity, such as whether
 the dish is a starter or dessert. If the model were to be specific to BBC recipe
 classification, we could include the name of the chef and the programme
 that showcased the recipe -- it might be that chefs or programmes tend toward
 certain cuisines. A very sophisticated approach using natural language techniques
 on the titles and the cooking method instructions could provide even more
-insight.
+insight. The disadvantage is that these are specific attributes for BBC recipes
+and a model based on them would be difficult to apply to the recipe domain in
+general.
 
 The other simplification that was made was that all ingredients were equal. Strictly,
 in the data model (see figure~\ref{model}) an \emph{ingredient} is a combination of a
@@ -1020,7 +1032,7 @@ amount of time that has passed since they were first imported. This is also
 reflected in the English language with a large number of words of foreign origin
 now being fully considered English in the modern age.
 
-Machine learning and classification is a problem with classes of such vastly
+Machine learning and classification is problematic with classes of such vastly
 different sizes. \cite{provost2000machine} Some have attempted to solve this
 problem with ``downsampling'' the larger classes (i.e. remove instances
 randomly until there are few as the smaller sets) or ``upsampling'' (i.e.
@@ -1032,14 +1044,15 @@ dramatically reduce the number of training instances overall (e.g. if
 all classes were downsampled to only 14 recipes each to match Portuguese). An
 upsampling approach might have better results, but it will artificially
 make the smaller cuisines seem less diverse than they really are and it
-is beyond the scope of this report.
+is beyond the scope of this report. Upsampling has also been shown to be
+less effective that downsampling for improving classification. \cite{drummond2003c4}
 
 There are other more subtle biases in the data set within subsets from other
 potential classifications that were discarded for this problem. For example,
 main courses significantly outnumber desserts and cakes and food dishes
 greatly outnumber drinks and cocktails (as noted in section~\ref{sec:evaluation}).
 Underrepresented groups such as drinks and desserts do not classify well
-on a decision tree trained on recipes where foods and main courses were in
+on a decision tree trained on recipes where foods and main courses are in
 the majority. This might be a sign of the need for ensemble methods as discussed
 in section~\ref{sec:ensemble}.
 
@@ -1058,7 +1071,7 @@ The recipe dataset has multiple groups that can be identified within it, e.g.
 cuisines, occasions are shown in section~\ref{visualisation}. Classification
 within these different groups might vary with, for example, French desserts
 differing somewhat from French main courses in ingredients, despite both
-being within the French cuisine class. This is a good candidiate for ensemble
+being within the French cuisine class. This is a good candidate for ensemble
 methods where we combine different machine learning techniques.
 
 A good way to improve the classification developed earlier could be to do
@@ -1068,13 +1081,13 @@ we can then run classification learning algorithms on the separate clusters.
 
 This allows each classifier to become an expert in only one subdomain of
 the recipe domain as a whole, where each subdomain is learnt through
-unsupervised learning rather than splitting the set in known ways. This might
-lead to distinctions a human expert may never have tried.
+unsupervised learning rather than splitting the set in known ways.
 
 A simpler possibility is to split on known attributes such as course and
 occasion and train separate classifiers on those, but that approach
 presupposes that the subsets obtained in this way are beneficial to
-classification.
+classification. A clustering approach can
+lead to distinctions and groupings a human expert may never have tried.
 
 \subsection{Comparing decision tree classifiers}
 
@@ -1082,7 +1095,7 @@ A difficulty with the ID3 -- and even to some extend the C4.5 -- algorithm
 is that it will overfit the data without some form of intervention. While
 it is possible to stop building the tree if the information gain is below
 a given, absolute threshold, the implementation in Weka did not provide this
-as a parameter. The C4.5 implemention, J48, had some more control over
+as a parameter. The C4.5 implementation, J48, had some more control over
 thresholds and pruning, but it still produced a very large decision tree.
 
 The CART algorithm produced the simplest tree, which would seem the most
@@ -1108,7 +1121,7 @@ was easy to enable was some generated Java code that relies on internal Weka
 classes and is overly verbose and difficult to read from a developer
 perspective.
 
-There were similar issues with C4.5/J48 and SimpleCart was even more difficult
+C4.5/J48 has similar issues and SimpleCart was even more difficult
 given that it did not even seem to have the option to generate the Java code.
 The tree shown in figure~\ref{fig:cart-decision-tree} was transcribed
 into the Dot language by hand -- a task that would be infeasible on the larger
@@ -1126,7 +1139,7 @@ the Weka API -- a recognised anti-pattern in production software development.
 Due to this, the serialised model saved in this way provides little more
 benefit than being able to persist models between closing and reopening
 the Weka application. The use of better exchange formats such as XML
-would both decouple the models from Weka and enable much more rapid prototying
+would both decouple the models from Weka and enable much more rapid prototyping
 and evaluation of models.
 
 Given that decision tree models can be expressed as a series of logical rules, for
@@ -1139,7 +1152,7 @@ example:
 \noindent one suitable output format would be Prolog code that can be interpreted
 by a Prolog interpreter to produce an expert system automatically. Such a modification
 has already been attempted on C4.5 by Karimi and Hamilton \cite{karimi2000logical}
-and more improvements similar to this would certaintly be a benefit to Weka.
+and more improvements similar to this would certainly be a benefit to Weka.
 
 \section{Conclusion}
 
